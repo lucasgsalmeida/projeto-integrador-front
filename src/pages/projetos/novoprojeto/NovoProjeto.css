@@ -1,0 +1,6 @@
+/* Ajustar a altura do editor */
+.ql-editor {
+    min-height: 200px; /* Ajuste o valor conforme necessário */
+    font-family: 'Nunito', sans-serif; /* Aplicar a fonte Nunito */
+  }
+  

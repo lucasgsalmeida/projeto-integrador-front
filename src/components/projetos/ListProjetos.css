@@ -1,0 +1,11 @@
+/* ListProjetos.css */
+
+.card-link {
+    text-decoration: none;
+    color: inherit; /* Para garantir que a cor do texto do link não seja sobrescrita */
+  }
+  
+  .card-link:hover {
+    text-decoration: none; /* Opcional: Para garantir que o texto não tenha sublinhado ao passar o mouse */
+  }
+  
