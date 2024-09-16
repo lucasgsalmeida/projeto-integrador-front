@@ -3,8 +3,11 @@ import { getUsuarioFromLocalStorage } from '../../request/UsuarioApi';
 
 const Topbar = () => {
 
-    const usuario = getUsuarioFromLocalStorage();
-  
+  const usuario = getUsuarioFromLocalStorage();
+
+  // Adicionar uma verificação condicional para evitar erros
+  const usuarioNome = usuario ? usuario.usuario.nome : 'Usuário';
+
     return (
         <nav className="navbar navbar-expand navbar-light bg-white topbar mb-4 static-top shadow">
           {/* Sidebar Toggle (Topbar) */}
@@ -58,7 +61,7 @@ const Topbar = () => {
                 aria-expanded="false"
               >
                 <span className="mr-2 d-none d-lg-inline text-gray-600 small">
-                  {usuario.usuario.nome}
+                  {usuarioNome}
                 </span>
                 <img
                   className="img-profile rounded-circle"

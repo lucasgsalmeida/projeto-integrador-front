@@ -62,3 +62,21 @@ export const createDepartamento = async (departamentoData) => {
     throw new Error('Erro ao criar departamento: ' + error.message);
   }
 };
+
+export const updateDepartamento = async (departamentoData) => {
+  try {
+    // Envia a requisição para atualizar um departamento
+    await axios.put(`${API_URL}/departamento/update`, departamentoData, {
+      headers: getAuthHeader()
+    });
+
+    // Atualiza o localStorage com a lista atualizada
+    fetchDepartamentos().then(departamentos => {
+      localStorage.setItem('departamentos', JSON.stringify(departamentos));
+    });
+
+  } catch (error) {
+    throw new Error('Erro ao atualizar departamento: ' + error.message);
+  }
+};
+

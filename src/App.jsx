@@ -14,6 +14,10 @@ import NovoProjeto from "./pages/projetos/novoprojeto/NovoProjeto";
 import EditarProjeto from "./pages/projetos/editarprojeto/EditarProjeto";
 import Departamento from "./pages/departamento/Departamento";
 import NovoDepartamento from "./pages/departamento/novodepartamento/NovoDepartamento";
+import EditarDepartamento from "./pages/departamento/editardepartamento/EditarDepartamento";
+import Tarefas from "./pages/tarefas/Tarefas";
+import NovaTarefa from "./pages/tarefas/novatarefa/NovaTarefa";
+import MinhasTarefas from "./pages/tarefas/minhas-tarefas/MinhasTarefas";
 
 function App() {
   const { isTokenValido } = useContext(ContextLogin);
@@ -55,7 +59,22 @@ function App() {
             path="/departamentos/novo"
             element={isTokenValido ? <NovoDepartamento /> : <Navigate to="/login" />}
           />
-
+                    <Route
+            path="/departamentos/:id"
+            element={isTokenValido ? <EditarDepartamento /> : <Navigate to="/login" />}
+          />
+                              <Route
+            path="/tarefas/list"
+            element={isTokenValido ? <Tarefas /> : <Navigate to="/login" />}
+          />
+           <Route
+            path="/tarefas/nova"
+            element={isTokenValido ? <NovaTarefa /> : <Navigate to="/login" />}
+          />
+                     <Route
+            path="/tarefas/minhas-tarefas"
+            element={isTokenValido ? <MinhasTarefas /> : <Navigate to="/login" />}
+          />
         </Routes>
       </div>
     </div>
