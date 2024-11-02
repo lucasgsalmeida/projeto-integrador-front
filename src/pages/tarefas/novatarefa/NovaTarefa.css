@@ -3,4 +3,16 @@
     min-height: 200px; /* Ajuste o valor conforme necessário */
     font-family: 'Nunito', sans-serif; /* Aplicar a fonte Nunito */
   }
+
+  .custom-control-label::before {
+    transform: scale(1.5); /* Aumenta o tamanho do switch */
+    width: 120px;
+    margin-right: 30px;
+
+  }
   
+  .nao-selecionavel {
+    user-select: none; /* Para navegadores modernos */
+    -webkit-user-select: none; /* Para Safari */
+    -moz-user-select: none; /* Para Firefox */
+}

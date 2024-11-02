@@ -12,7 +12,7 @@ const NovoProjeto = () => {
   const [usuarios, setUsuarios] = useState([]);
   const [departamentos, setDepartamentos] = useState([]);
   const [nome, setNome] = useState("");
-  const [status, setStatus] = useState("");
+  const [status, setStatus] = useState("ATIVO");
   const [prioridade, setPrioridade] = useState("");
   const [tipoServico, setTipoServico] = useState("");
   const [orcamentoMensal, setOrcamentoMensal] = useState("0,00");
@@ -283,6 +283,7 @@ const NovoProjeto = () => {
                   </div>
                 </div>
 
+                {departamentos.length > 0 && (
                 <div className="mb-4 border-left-primary shadow py-2 mb-2">
                   <div className="card-header text-gray-900">
                     Responsável por departamento
@@ -329,6 +330,7 @@ const NovoProjeto = () => {
                     ))}
                   </div>
                 </div>
+                )}
 
                 <div className="mb-4 border-left-primary shadow py-2 mb-2">
                   <div className="card-header text-gray-900">

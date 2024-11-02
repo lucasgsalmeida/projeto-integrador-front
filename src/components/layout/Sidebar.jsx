@@ -36,6 +36,22 @@ const Sidebar = () => {
       </li>
       <hr className="sidebar-divider my-0" />
 
+      <li
+        className={`nav-item ${
+          activeItem === "/escritorio" ? "active" : ""
+        }`}
+      >
+        <a
+          className="nav-link"
+          href="/configuracoes"
+          onClick={() => handleItemClick("/escritorio")}
+        >
+          <i className="fas fa-fw fa-tachometer-alt" />
+          <span>Configurações</span>
+        </a>
+      </li>
+      <hr className="sidebar-divider my-0" />
+
       <li className={`nav-item ${activeItem === "/projetos" ? "active" : ""}`}>
         <a
           className="nav-link"
@@ -46,24 +62,6 @@ const Sidebar = () => {
           <span>Projetos</span>
         </a>
       </li>
-      <hr className="sidebar-divider my-0" />
-
-      <li
-        className={`nav-item ${
-          activeItem === "/departamentos" ? "active" : ""
-        }`}
-      >
-        <a
-          className="nav-link"
-          href="/departamentos"
-          onClick={() => handleItemClick("/departamentos")}
-        >
-          <i className="fas fa-fw fa-tachometer-alt" />
-          <span>Departamentos</span>
-        </a>
-      </li>
-      <hr className="sidebar-divider my-0" />
-
       <hr className="sidebar-divider my-0" />
 
       <li className={`nav-item ${activeItem === "/tarefas" ? "active" : ""}`}>

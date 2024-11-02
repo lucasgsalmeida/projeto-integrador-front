@@ -18,6 +18,10 @@ import EditarDepartamento from "./pages/departamento/editardepartamento/EditarDe
 import Tarefas from "./pages/tarefas/Tarefas";
 import NovaTarefa from "./pages/tarefas/novatarefa/NovaTarefa";
 import MinhasTarefas from "./pages/tarefas/minhas-tarefas/MinhasTarefas";
+import TipoTarefa from "./pages/tipoTarefa/TipoTarefa";
+import CriarTipoTarefa from "./pages/tipoTarefa/CriarTipoTarefa";
+import EditarTipoTarefa from "./pages/tipoTarefa/EditarTipoTarefa";
+import Configuracoes from "./pages/configuracoes/Configuracoes";
 
 function App() {
   const { isTokenValido } = useContext(ContextLogin);
@@ -39,6 +43,10 @@ function App() {
             path="/home"
             element={isTokenValido ? <Dashboard /> : <Navigate to="/login" />}
           />
+            <Route
+            path="/configuracoes"
+            element={isTokenValido ? <Configuracoes /> : <Navigate to="/login" />}
+          />
           <Route
             path="/projetos"
             element={isTokenValido ? <Projetos /> : <Navigate to="/login" />}
@@ -47,33 +55,59 @@ function App() {
             path="/projetos/novo"
             element={isTokenValido ? <NovoProjeto /> : <Navigate to="/login" />}
           />
-                    <Route
+          <Route
             path="/projetos/:id"
-            element={isTokenValido ? <EditarProjeto /> : <Navigate to="/login" />}
+            element={
+              isTokenValido ? <EditarProjeto /> : <Navigate to="/login" />
+            }
           />
-                    <Route
+          <Route
             path="/departamentos"
-            element={isTokenValido ? <Departamento /> : <Navigate to="/login" />}
+            element={
+              isTokenValido ? <Departamento /> : <Navigate to="/login" />
+            }
           />
-                    <Route
+          <Route
             path="/departamentos/novo"
-            element={isTokenValido ? <NovoDepartamento /> : <Navigate to="/login" />}
+            element={
+              isTokenValido ? <NovoDepartamento /> : <Navigate to="/login" />
+            }
           />
-                    <Route
+          <Route
             path="/departamentos/:id"
-            element={isTokenValido ? <EditarDepartamento /> : <Navigate to="/login" />}
+            element={
+              isTokenValido ? <EditarDepartamento /> : <Navigate to="/login" />
+            }
           />
-                              <Route
+          <Route
             path="/tarefas/list"
             element={isTokenValido ? <Tarefas /> : <Navigate to="/login" />}
           />
-           <Route
+          <Route
             path="/tarefas/nova"
             element={isTokenValido ? <NovaTarefa /> : <Navigate to="/login" />}
           />
-                     <Route
+          <Route
             path="/tarefas/minhas-tarefas"
-            element={isTokenValido ? <MinhasTarefas /> : <Navigate to="/login" />}
+            element={
+              isTokenValido ? <MinhasTarefas /> : <Navigate to="/login" />
+            }
+          />
+          <Route
+            path="/tarefas/modelo"
+            element={isTokenValido ? <TipoTarefa /> : <Navigate to="/login" />}
+          />
+          <Route
+            path="/tarefas/modelo/novo"
+            element={
+              isTokenValido ? <CriarTipoTarefa /> : <Navigate to="/login" />
+            }
+          />
+            <Route
+            path="/tarefas/modelo/:id"
+            element={
+              isTokenValido ? <EditarTipoTarefa /> : <Navigate to="/login" />
+            }
           />
         </Routes>
       </div>

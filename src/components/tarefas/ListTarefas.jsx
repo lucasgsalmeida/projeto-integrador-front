@@ -60,6 +60,14 @@ const ListTarefas = () => {
 const TarefaItem = ({ tarefa, getNomeProjeto, getUltimaSubTarefa }) => {
   const [nomeTipoTarefa, setNomeTipoTarefa] = useState('Carregando...');
 
+  const formatarData = (dataISO) => {
+    const partes = dataISO.split("T")[0].split("-");
+    const ano = partes[0];
+    const mes = partes[1];
+    const dia = partes[2];
+    return `${dia}/${mes}/${ano}`;
+  };
+  
   useEffect(() => {
     const fetchTipoTarefa = async () => {
       try {
@@ -87,7 +95,7 @@ const TarefaItem = ({ tarefa, getNomeProjeto, getUltimaSubTarefa }) => {
                 Projeto: {getNomeProjeto(tarefa.idProjeto)}
               </div>
               <div className="text-muted small">
-                Data de entrega: {ultimaSubTarefa ? ultimaSubTarefa.dataFim : 'Data não encontrada'}
+                Data de entrega: {ultimaSubTarefa ? formatarData(ultimaSubTarefa.dataFim) : 'Data não encontrada'}
               </div>
             </div>
             <div className="text-muted small">

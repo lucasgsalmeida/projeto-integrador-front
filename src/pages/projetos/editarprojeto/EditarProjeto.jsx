@@ -5,6 +5,7 @@ import { fetchDepartamentos } from "../../../request/DepartamentoApi"; // Import
 import {
   fetchProjetoById,
   atualizarProjeto,
+  deleteProjeto
 } from "../../../request/ProjetoApi"; // Importando funções para buscar e atualizar projeto
 import Layout from "../../layout/Layout";
 import ReactQuill from "react-quill";
@@ -27,6 +28,7 @@ const EditarProjeto = () => {
   const [responsaveisDepartamentos, setResponsaveisDepartamentos] = useState(
     []
   );
+
   const [error, setError] = useState(null);
   const navigate = useNavigate();
 
@@ -60,6 +62,13 @@ const EditarProjeto = () => {
     const formattedYear = date.getUTCFullYear();
     return `${formattedDay}/${formattedMonth}/${formattedYear}`; // Formato DD/MM/YYYY
   };
+
+  const formatDateToLocal = (dateString) => {
+    const [year, month, day] = dateString.split("-");
+    const date = new Date(year, month - 1, day);
+    return date;
+  };
+
 
   useEffect(() => {
     const fetchData = async () => {
@@ -113,31 +122,38 @@ const EditarProjeto = () => {
 
   const handleChange = (e) => {
     const inputValue = e.target.value;
-    // Remove qualquer caractere não numérico
     const numericValue = inputValue.replace(/\D/g, "");
-    // Converte para formato de centavos e formata com vírgula
     const formattedValue = formatCurrency(numericValue);
     setOrcamentoMensal(formattedValue);
+  };
+
+  const handleDelete = async () => {
+    try {
+      await deleteProjeto(id); // Chama a função para deletar o departamento
+      navigate("/projetos"); // Redireciona após a exclusão
+    } catch (error) {
+      console.error("Erro ao deletar projeto:", error);
+      alert("Erro ao deletar projeto");
+    }
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
       const projetoData = {
-        id,
         nome,
         status,
         prioridade,
         tipoServico,
         rdp: responsaveisDepartamentos,
-        dataInicio,
+        dataInicio: formatDateToLocal(dataInicio),
         orcamentoMensal,
         observacao,
       };
 
-      await atualizarProjeto(projetoData); // Usando a função importada para atualizar o projeto
+      console.log(projetoData)
+      await atualizarProjeto(id, projetoData);
 
-      // Limpar os campos após o envio bem-sucedido
       setNome("");
       setStatus("");
       setPrioridade("");
@@ -175,7 +191,7 @@ const EditarProjeto = () => {
                 <div className="page-header-content">
                   <div className="row align-items-center justify-content-between pt-3">
                     <div className="col-auto mb-3">
-                      <h1 className="h3 mb-0 text-gray-800">Criar projeto</h1>
+                      <h1 className="h3 mb-0 text-gray-800">Editar projeto</h1>
                     </div>
                   </div>
                 </div>
@@ -303,6 +319,8 @@ const EditarProjeto = () => {
                     </div>
                   </div>
 
+                  {departamentos.length > 0 && (
+
                   <div className="mb-4 border-left-primary shadow py-2 mb-2">
                     <div className="card-header text-gray-900">
                       Responsável por departamento
@@ -349,6 +367,7 @@ const EditarProjeto = () => {
                       ))}
                     </div>
                   </div>
+                  )}
 
                   <div className="mb-4 border-left-primary shadow py-2 mb-2">
                     <div className="card-header text-gray-900">
@@ -406,7 +425,8 @@ const EditarProjeto = () => {
                         </button>
                         <button
                           className="fw-500 btn btn-danger ml-2"
-                          type="submit"
+                          type="button"
+                          onClick={handleDelete}
                         >
                           Excluir projeto
                         </button>

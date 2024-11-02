@@ -11,18 +11,10 @@ const getAuthHeader = () => {
 
 export const fetchProjetos = async () => {
   try {
-    const storedProjetos = localStorage.getItem('projetos');
-    
-    if (storedProjetos) {
-      return JSON.parse(storedProjetos);
-    } else {
-      const response = await axios.get(`${API_URL}/projeto/get/all`, {
-        headers: getAuthHeader()
-      });
-      const projetosData = response.data;
-      localStorage.setItem('projetos', JSON.stringify(projetosData));
-      return projetosData;
-    }
+    const response = await axios.get(`${API_URL}/projeto/get/all`, {
+      headers: getAuthHeader()
+    });
+    return response.data;
   } catch (error) {
     throw new Error('Erro ao buscar projetos.');
   }
@@ -30,16 +22,6 @@ export const fetchProjetos = async () => {
 
 export const fetchProjetoById = async (id) => {
   try {
-    const storedProjetos = localStorage.getItem('projetos');
-
-    if (storedProjetos) {
-      const projetos = JSON.parse(storedProjetos);
-      const projeto = projetos.find(projeto => projeto.id === id);
-      if (projeto) {
-        return projeto;
-      }
-    }
-
     const response = await axios.get(`${API_URL}/projeto/get?id=${id}`, {
       headers: getAuthHeader()
     });
@@ -61,9 +43,9 @@ export const createProjeto = async (projetoData) => {
   }
 };
 
-export const atualizarProjeto = async (projetoData) => {
+export const atualizarProjeto = async (id, projetoData) => {
   try {
-    const response = await axios.put(`${API_URL}/projeto/update`, projetoData, {
+    const response = await axios.put(`${API_URL}/projeto/update/${id}`, projetoData, {
       headers: getAuthHeader()
     });
     return response.data;
@@ -72,3 +54,13 @@ export const atualizarProjeto = async (projetoData) => {
   }
 };
 
+export const deleteProjeto = async (id) => {
+  try {
+    const response = await axios.delete(`${API_URL}/projeto/delete/${id}`, {
+      headers: getAuthHeader()
+    });
+    return response.data;
+  } catch (error) {
+    throw new Error('Erro ao atualizar projeto.');
+  }
+};

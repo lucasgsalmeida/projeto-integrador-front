@@ -9,15 +9,25 @@ const getAuthHeader = () => {
   };
 };
 
+export const fetchTarefasPorUsuario = async (id) => {
+  try {
+    const response = await axios.get(`${API_URL}/tarefa/get?id=${id}`, {
+      headers: getAuthHeader()
+    });
+    return response.data;
+  } catch (error) {
+    throw new Error('Erro ao buscar tarefas.');
+  }
+};
+
+
 // Função para buscar todas as tarefas
 export const fetchTarefas = async () => {
   try {
     const response = await axios.get(`${API_URL}/tarefa/get/all`, {
       headers: getAuthHeader()
     });
-    const tarefas = response.data;
-    localStorage.setItem('tarefas', JSON.stringify(tarefas));
-    return tarefas;
+    return response.data;
   } catch (error) {
     throw new Error('Erro ao buscar tarefas.');
   }
@@ -38,3 +48,4 @@ export const createTarefa = async (tarefaData) => {
     throw new Error('Erro ao criar tarefa.');
   }
 };
+

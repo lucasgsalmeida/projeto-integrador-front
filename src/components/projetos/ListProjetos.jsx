@@ -20,17 +20,15 @@ const ListProjetos = () => {
     fetchData();
   }, []);
 
-  const formatDate = (dateString) => {
-    const [year, month, day] = dateString.split('-');
-    const date = new Date(Date.UTC(year, month - 1, day));
-    const formattedDay = (`0${date.getUTCDate()}`).slice(-2);
-    const formattedMonth = (`0${date.getUTCMonth() + 1}`).slice(-2);
-    const formattedYear = date.getUTCFullYear();
-    return `${formattedDay}/${formattedMonth}/${formattedYear}`; // Formato DD/MM/YYYY
+  const formatarData = (dataISO) => {
+    const partes = dataISO.split("T")[0].split("-");
+    const ano = partes[0];
+    const mes = partes[1];
+    const dia = partes[2];
+    return `${dia}/${mes}/${ano}`;
   };
   
   
-
   return (
     <>
       {error && <p>{error}</p>}
@@ -47,7 +45,7 @@ const ListProjetos = () => {
                       Status: {projeto.status}
                     </div>
                     <div className="text-muted small">
-                    Data de início: {formatDate(projeto.dataInicio)}
+                    Data de início: {formatarData(projeto.dataInicio)}
                     </div>
                   </div>
                 </div>

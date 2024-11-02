@@ -37,7 +37,7 @@ const NovoDepartamento = () => {
 
       setNome("");
       setIdUsuario("");
-      navigate("/departamentos"); // Redireciona após a criação
+      navigate("/configuracoes"); // Redireciona após a criação
     } catch (error) {
       console.error("Erro ao criar departamento:", error);
       alert("Erro ao criar departamento");
@@ -54,7 +54,7 @@ const NovoDepartamento = () => {
                 <div className="page-header-content">
                   <div className="row align-items-center justify-content-between pt-3">
                     <div className="col-auto mb-3">
-                      <h1 className="h3 mb-0 text-gray-800">Criar projeto</h1>
+                      <h1 className="h3 mb-0 text-gray-800">Criar departamento</h1>
                     </div>
                   </div>
                 </div>
@@ -113,7 +113,7 @@ const NovoDepartamento = () => {
                       data-feather="info"
                       data-bs-toggle="tooltip"
                       data-bs-placement="left"
-                      title="After submitting, your post will be published once it is approved by a moderator."
+                      title=""
                     />
                   </div>
 

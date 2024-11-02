@@ -4,6 +4,7 @@ import { fetchUsuarios } from "../../../request/UsuarioApi"; // Importando a fun
 import {
   fetchDepartamentoById,
   updateDepartamento,
+  deleteDepartamento
 } from "../../../request/DepartamentoApi"; // Importando as funções para buscar e atualizar o departamento
 import Layout from "../../layout/Layout";
 
@@ -41,12 +42,11 @@ const EditarDepartamento = () => {
     e.preventDefault();
     try {
       const departamentoData = {
-        id,
         nome,
         idUsuario,
       };
 
-      await updateDepartamento(departamentoData); // Atualiza o departamento
+      await updateDepartamento(id, departamentoData); // Atualiza o departamento
 
       navigate("/departamentos"); // Redireciona após a atualização
     } catch (error) {
@@ -54,6 +54,17 @@ const EditarDepartamento = () => {
       alert("Erro ao atualizar departamento");
     }
   };
+
+  const handleDelete = async () => {
+    try {
+      await deleteDepartamento(id); // Chama a função para deletar o departamento
+      navigate("/departamentos"); // Redireciona após a exclusão
+    } catch (error) {
+      console.error("Erro ao deletar departamento:", error);
+      alert("Erro ao deletar departamento");
+    }
+  };
+
 
   return (
     <Layout>
@@ -136,13 +147,14 @@ const EditarDepartamento = () => {
                           className="fw-500 btn btn-warning text-gray-900 mr-2"
                           type="submit"
                         >
-                          Editar projeto
+                          Editar departamento
                         </button>
                         <button
                           className="fw-500 btn btn-danger ml-2"
-                          type="submit"
-                        >
-                          Excluir projeto
+                          type="button"
+                          onClick={handleDelete}
+                          >
+                          Excluir departamento
                         </button>
                       </div>{" "}
                     </div>
