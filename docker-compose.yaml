@@ -1,0 +1,20 @@
+version: '3.8'
+
+services:
+  frontend:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    labels:
+      - traefik.enable=true
+      - traefik.http.routers.frontend.rule=Host(`gestao.lumendigital.com.br`)
+      - traefik.http.routers.frontend.entrypoints=web,websecure
+      - traefik.http.routers.frontend.tls.certresolver=leresolver
+      - traefik.http.routers.frontend.service=frontend
+      - traefik.http.services.frontend.loadbalancer.server.port=8080
+      - traefik.http.services.frontend.loadbalancer.passHostHeader=true
+    networks:
+      - frontend-network
+networks:
+  frontend-network:
+    external: true
