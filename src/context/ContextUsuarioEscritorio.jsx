@@ -14,7 +14,7 @@ export const ContextUserClientProvider = ({ children }) => {
 
   const requestContextUserClient = async (token) => {
     try {
-      const response = await axios.get("http://localhost:8080/usuario/get/id", {
+      const response = await axios.get("https://apigestao.lumendigital.com.br/usuario/get/id", {
         headers: {
           Authorization: `Bearer ${token}`
         }
