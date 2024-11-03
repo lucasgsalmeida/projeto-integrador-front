@@ -15,20 +15,3 @@ COPY . .
 
 # Compila o projeto para produção
 RUN npm run build
-
-# Fase de produção
-FROM node:18 AS production
-
-WORKDIR /app
-
-# Copia os arquivos compilados
-COPY --from=builder /app/dist ./dist
-
-# Instala um servidor estático para servir os arquivos
-RUN npm install -g serve
-
-# Expõe a porta que o serve usará
-EXPOSE 3000
-
-# Comando para iniciar o servidor estático
-CMD ["serve", "-s", "dist", "-l", "3000"]
