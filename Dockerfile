@@ -28,7 +28,7 @@ COPY --from=builder /app/dist ./dist
 RUN npm install -g serve
 
 # Expõe a porta que o serve usará
-EXPOSE 3000
+EXPOSE 3795
 
 # Comando para iniciar o servidor estático
-CMD ["serve", "-s", "dist", "-l", "3000"]
+CMD ["serve", "-s", "dist", "-l", "3795"]
