@@ -17,13 +17,18 @@ COPY . .
 RUN npm run build
 
 # Fase de produção
-FROM nginx:alpine
+FROM node:18 AS production
 
-# Copia os arquivos compilados para o diretório do Nginx
-COPY --from=builder /app/dist /usr/share/nginx/html
+WORKDIR /app
 
-# Expõe a porta padrão do Nginx
-EXPOSE 5153
+# Copia os arquivos compilados
+COPY --from=builder /app/dist ./dist
 
-# Comando para iniciar o Nginx
-CMD ["nginx", "-g", "daemon off;"]
+# Instala um servidor estático para servir os arquivos
+RUN npm install -g serve
+
+# Expõe a porta que o serve usará
+EXPOSE 3000
+
+# Comando para iniciar o servidor estático
+CMD ["serve", "-s", "dist", "-l", "3000"]
