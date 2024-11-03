@@ -23,7 +23,7 @@ FROM nginx:alpine
 COPY --from=builder /app/dist /usr/share/nginx/html
 
 # Expõe a porta padrão do Nginx
-EXPOSE 5879
+EXPOSE 5153
 
 # Comando para iniciar o Nginx
 CMD ["nginx", "-g", "daemon off;"]
