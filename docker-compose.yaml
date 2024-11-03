@@ -1,18 +1,18 @@
 version: '3.8'
 
 services:
-  frontend:
+  front-gestao:
     build:
       context: .
       dockerfile: Dockerfile
     labels:
       - traefik.enable=true
-      - traefik.http.routers.frontend.rule=Host(`gestao.lumendigital.com.br`)
-      - traefik.http.routers.frontend.entrypoints=web,websecure
-      - traefik.http.routers.frontend.tls.certresolver=leresolver
-      - traefik.http.routers.frontend.service=frontend
-      - traefik.http.services.frontend.loadbalancer.server.port=3000
-      - traefik.http.services.frontend.loadbalancer.passHostHeader=true
+      - traefik.http.routers.front-gestao.rule=Host(`gestao.lumendigital.com.br`)
+      - traefik.http.routers.front-gestao.entrypoints=web,websecure
+      - traefik.http.routers.front-gestao.tls.certresolver=leresolver
+      - traefik.http.routers.front-gestao.service=front-gestao
+      - traefik.http.services.front-gestao.loadbalancer.server.port=3795
+      - traefik.http.services.front-gestao.loadbalancer.passHostHeader=true
     networks:
       - frontgestao
 networks:
