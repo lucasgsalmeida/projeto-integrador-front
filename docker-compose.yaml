@@ -14,7 +14,7 @@ services:
       - traefik.http.services.frontend.loadbalancer.server.port=3000
       - traefik.http.services.frontend.loadbalancer.passHostHeader=true
     networks:
-      - frontend-network
+      - frontgestao
 networks:
-  frontend-network:
-    external: true
+  frontgestao:
+    external: false
