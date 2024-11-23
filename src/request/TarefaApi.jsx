@@ -11,7 +11,7 @@ const getAuthHeader = () => {
 
 export const fetchTarefasPorUsuario = async (id) => {
   try {
-    const response = await axios.get(`${API_URL}/tarefa/get?id=${id}`, {
+    const response = await axios.get(`${API_URL}/tarefa/get/abertas?id=${id}`, {
       headers: getAuthHeader()
     });
     return response.data;
@@ -32,10 +32,21 @@ export const fetchTarefasPorAprovacao = async (id) => {
 };
 
 
-// Função para buscar todas as tarefas
-export const fetchTarefas = async () => {
+export const fetchTarefasAbertas = async () => {
   try {
-    const response = await axios.get(`${API_URL}/tarefa/get/all`, {
+    const response = await axios.get(`${API_URL}/tarefa/get/all/abertas`, {
+      headers: getAuthHeader()
+    });
+    console.log("aa")
+    return response.data;
+  } catch (error) {
+    throw new Error('Erro ao buscar tarefas.');
+  }
+};
+
+export const fetchTarefasFechadas = async () => {
+  try {
+    const response = await axios.get(`${API_URL}/tarefa/get/all/fechadas`, {
       headers: getAuthHeader()
     });
     return response.data;
@@ -43,6 +54,7 @@ export const fetchTarefas = async () => {
     throw new Error('Erro ao buscar tarefas.');
   }
 };
+
 
 // Função para criar uma nova tarefa
 export const createTarefa = async (tarefaData) => {

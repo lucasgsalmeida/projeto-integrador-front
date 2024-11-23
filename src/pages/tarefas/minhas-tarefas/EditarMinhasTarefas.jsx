@@ -37,11 +37,11 @@ function EditarMinhasTarefas({ tarefa, onClose, getNomeProjeto }) {
       }
     });
 
-    console.log(tarefa)
+    console.log(tarefa);
 
     try {
       await atualizarTarefa(tarefaAtualizada.id, tarefaAtualizada);
-      navigate("/tarefas/minhas-tarefas");
+      navigate("/tarefas/list");
       onClose();
     } catch (error) {
       console.error("Erro ao atualizar tarefa:", error);
@@ -56,7 +56,6 @@ function EditarMinhasTarefas({ tarefa, onClose, getNomeProjeto }) {
   };
 
   const editarComentario = (index, mensagem) => {
-
     setComentarioSubTarefa((prevState) => ({
       ...prevState,
       [index]: mensagem,
@@ -113,29 +112,24 @@ function EditarMinhasTarefas({ tarefa, onClose, getNomeProjeto }) {
 
   return (
     <div style={popupStyles.overlay}>
-      <div style={popupStyles.popup}>
+      <div style={popupStyles.popup} className="position-relative p-2 pt-5">
         <main>
           <form onSubmit={handleSubmit}>
-            <header className="page-header page-header-compact page-header-light border-bottom mb-4">
-              <div className="container-fluid px-4">
-                <div className="page-header-content">
-                  <div className="row align-items-center justify-content-between pt-3">
-                    <div className="card-header text-gray-900 d-flex justify-content-center align-items-center">
-                      <h1 className="h3 mb-0 text-gray-800">Tarefa</h1>
-
-                      <a
-                        onClick={onClose}
-                        className="btn btn-primary btn-icon-split shadow justify-content-right"
-                      >
-                        <span className="icon text-white-50">
-                          <i className="fas fa-minus" />
-                        </span>
-                      </a>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </header>
+            <div className="row align-items-center justify-content-between">
+              <a
+                onClick={onClose}
+                className="btn btn-danger btn-icon-split shadow position-absolute"
+                style={{
+                  top: "10px",
+                  right: "10px",
+                  padding: "0.5rem",
+                }}
+              >
+                <span className="btn btn-danger btn-icon-split text-white-50">
+                  <i className="fas fa-minus" />
+                </span>
+              </a>
+            </div>
             <div className="container-fluid">
               <div className="m-0">
                 <div className="mb-2 border-left-primary shadow p-0 pl-3">
@@ -344,10 +338,13 @@ function EditarMinhasTarefas({ tarefa, onClose, getNomeProjeto }) {
                 })}
               </div>
             </div>
-            <div className="card-body">
-              <div className="d-grid">
-                <button className="fw-500 btn btn-primary" type="submit">
-                  Salvar projeto
+            <div className="card-body bottom-0 start-0 end-0 p-3">
+              <div className="d-flex justify-content-start">
+                <button className="fw-500 btn btn-primary ml-2" type="submit">
+                  Salvar tarefa
+                </button>
+                <button className="fw-500 btn btn-danger ml-4" type="submit">
+                  Excluir tarefa
                 </button>
               </div>
             </div>
@@ -375,7 +372,7 @@ const popupStyles = {
     backgroundColor: "#fff",
     padding: "20px",
     borderRadius: "10px",
-    maxWidth: "900px",
+    maxWidth: "1200px",
     width: "100%",
     maxHeight: "80vh", // Limita a altura do popup
     overflowY: "auto", // Permite scroll vertical se o conteúdo ultrapassar a altura máxima

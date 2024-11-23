@@ -1,19 +1,38 @@
 import React, { useEffect, useState } from "react";
-import { fetchTarefas } from "../../request/TarefaApi";
+import { fetchTarefasAbertas, fetchTarefasFechadas } from "../../request/TarefaApi";
 import { fetchProjetos } from "../../request/ProjetoApi";
 import { fetchTipoTarefaById } from "../../request/TipoTarefaApi";
+import EditarMinhasTarefas from "../../pages/tarefas/minhas-tarefas/EditarMinhasTarefas";
 
-const ListTarefas = () => {
+const ListTarefas = (tipo) => {
+
+  const tipoConsulta = tipo.tipo
+
   const [tarefas, setTarefas] = useState([]);
   const [projetos, setProjetos] = useState([]);
   const [error, setError] = useState(null);
+  const [tarefaSelecionada, setTarefaSelecionada] = useState(null);
+
+
+  const handleClickTarefa = (tarefa) => {
+    setTarefaSelecionada(tarefa);
+  };
+
+  const handleClosePopup = () => {
+    setTarefaSelecionada(null); // Fechar o popup
+  };
 
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const fetchedTarefas = await fetchTarefas();
+        if (tipoConsulta==="todas") {
+        const fetchedTarefas = await fetchTarefasAbertas();
         setTarefas(fetchedTarefas);
-    
+      }
+      if (tipoConsulta==="arquivo") {
+        const fetchedTarefas = await fetchTarefasFechadas();
+        setTarefas(fetchedTarefas);
+      }
         const fetchedProjetos = await fetchProjetos();
         setProjetos(fetchedProjetos);
       } catch (error) {
@@ -48,16 +67,25 @@ const ListTarefas = () => {
             tarefa={tarefa}
             getNomeProjeto={getNomeProjeto}
             getUltimaSubTarefa={getUltimaSubTarefa}
-          />
+            onClick={() => handleClickTarefa(tarefa)} // Passa a função de clique
+            />
         ))
       ) : (
         <p>Nenhuma tarefa encontrada.</p>
       )}
+            {tarefaSelecionada && (
+        <EditarMinhasTarefas
+          tarefa={tarefaSelecionada}
+          onClose={handleClosePopup} // Função para fechar o popup
+          getNomeProjeto={getNomeProjeto}
+        />
+      )}
     </>
+    
   );
 };
 
-const TarefaItem = ({ tarefa, getNomeProjeto, getUltimaSubTarefa }) => {
+const TarefaItem = ({ tarefa, getNomeProjeto, getUltimaSubTarefa, onClick }) => {
   const [nomeTipoTarefa, setNomeTipoTarefa] = useState('Carregando...');
 
   const formatarData = (dataISO) => {
@@ -86,8 +114,8 @@ const TarefaItem = ({ tarefa, getNomeProjeto, getUltimaSubTarefa }) => {
 
   return (
     <div className="card border-left-primary shadow h-100 py-2 mb-3" key={tarefa.id}>
-      <a className="card-link" href={`/editar/${tarefa.id}`}>
-        <div className="card-body d-flex justify-content-center flex-column">
+      <a className="card-link w-100" href="#" onClick={onClick}>
+      <div className="card-body d-flex justify-content-center flex-column">
           <div className="d-flex align-items-center justify-content-between">
             <div className="me-3">
               <h5 className="card-title">{nomeTipoTarefa}</h5>

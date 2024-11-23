@@ -3,18 +3,20 @@ import {
   fetchUsuarios,
   getUsuarioFromLocalStorage,
 } from "../../request/UsuarioApi";
-import { fetchTarefasPorUsuario as fetchTarefasPorUsuarioAPI } from "../../request/TarefaApi";
+import { fetchTarefasPorAprovacao, fetchTarefasPorUsuario as fetchTarefasPorUsuarioAPI } from "../../request/TarefaApi";
 import { fetchProjetos } from "../../request/ProjetoApi";
 import { fetchTipoTarefaById } from "../../request/TipoTarefaApi";
 import { fetchDepartamentos } from "../../request/DepartamentoApi";
 import EditarMinhasTarefas from "../../pages/tarefas/minhas-tarefas/EditarMinhasTarefas";
 
-const ListMinhasTarefas = () => {
+const ListMinhasTarefas = (tipo) => {
   const [tarefas, setTarefas] = useState([]);
   const [projetos, setProjetos] = useState([]);
   const [error, setError] = useState(null);
   const [usuario, setUsuario] = useState(null);
-  const [tarefaSelecionada, setTarefaSelecionada] = useState(null); // Estado para armazenar a tarefa selecionada
+  const [tarefaSelecionada, setTarefaSelecionada] = useState(null);
+
+  const tipoConsulta = tipo.tipo
 
   useEffect(() => {
     const fetchData = async () => {
@@ -23,10 +25,15 @@ const ListMinhasTarefas = () => {
         setUsuario(loggedUser.usuario);
 
         if (loggedUser) {
-          const fetchedTarefas = await fetchTarefasPorUsuarioAPI(
-            loggedUser.usuario.id
-          );
+
+          if (tipoConsulta==="aprovacao") {
+          const fetchedTarefas = await fetchTarefasPorAprovacao(loggedUser.usuario.id);
           setTarefas(fetchedTarefas);
+        } if (tipoConsulta==="todas") {
+          const fetchedTarefas = await fetchTarefasPorUsuarioAPI(loggedUser.usuario.id);
+          setTarefas(fetchedTarefas);
+
+        }
         } else {
           setError("Usuário não encontrado.");
         }

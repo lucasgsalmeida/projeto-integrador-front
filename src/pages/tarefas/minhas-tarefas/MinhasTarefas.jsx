@@ -1,12 +1,19 @@
-import React from 'react'
-import Layout from '../../layout/Layout'
-import ListMinhasTarefas from '../../../components/tarefas/ListMinhasTarefas'
+import React from "react";
+import Layout from "../../layout/Layout";
+import ListMinhasTarefas from "../../../components/tarefas/ListMinhasTarefas";
 
-const MinhasTarefas = () => {
+const MinhasTarefas = (tipo) => {
+
+  const tipoConsulta = tipo.tipo
+
   return (
     <Layout>
       <div className="d-sm-flex align-items-center justify-content-between mb-4">
-        <h1 className="h3 mb-0 text-gray-800">Minhas tarefas</h1>
+        {tipoConsulta === "todas" ? (
+          <h1 className="h3 mb-0 text-gray-800">Minhas tarefas</h1>
+        ) : (
+          <h1 className="h3 mb-0 text-gray-800">Tarefas para aprovação</h1>
+        )}
       </div>
       <div className="border-left-primary shadow h-100 py-2 mb-5">
         <div className="input-group">
@@ -25,10 +32,10 @@ const MinhasTarefas = () => {
         </div>
       </div>
       <div className="">
-        <ListMinhasTarefas />
+        <ListMinhasTarefas tipo={tipoConsulta} />
       </div>
     </Layout>
-    )
-}
+  );
+};
 
-export default MinhasTarefas
+export default MinhasTarefas;

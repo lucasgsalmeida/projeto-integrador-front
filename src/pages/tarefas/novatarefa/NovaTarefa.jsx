@@ -251,6 +251,7 @@ const NovaTarefa = () => {
     try {
       await createTarefa({
         idProjeto,
+        idUsuario: usuarioAtual.id,
         id_tipoTarefa: idTipoTarefa,
         subTarefaList: formattedSubTarefaList,
         prioridadeTarefa,

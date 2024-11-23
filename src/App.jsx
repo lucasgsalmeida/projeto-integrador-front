@@ -22,7 +22,7 @@ import TipoTarefa from "./pages/tipoTarefa/TipoTarefa";
 import CriarTipoTarefa from "./pages/tipoTarefa/CriarTipoTarefa";
 import EditarTipoTarefa from "./pages/tipoTarefa/EditarTipoTarefa";
 import Configuracoes from "./pages/configuracoes/Configuracoes";
-import ParaAprovacao from "./pages/tarefas/minhas-tarefas/ParaAprovacao";
+import NovoUsuario from "./pages/usuario/NovoUsuario";
 
 function App() {
   const { isTokenValido } = useContext(ContextLogin);
@@ -74,6 +74,12 @@ function App() {
               isTokenValido ? <NovoDepartamento /> : <Navigate to="/login" />
             }
           />
+                    <Route
+            path="/usuarios/novo"
+            element={
+              isTokenValido ? <NovoUsuario /> : <Navigate to="/login" />
+            }
+          />
           <Route
             path="/departamentos/:id"
             element={
@@ -82,7 +88,11 @@ function App() {
           />
           <Route
             path="/tarefas/list"
-            element={isTokenValido ? <Tarefas /> : <Navigate to="/login" />}
+            element={isTokenValido ? <Tarefas tipo="todas"/> : <Navigate to="/login" />}
+          />
+                    <Route
+            path="/tarefas/arquivo"
+            element={isTokenValido ? <Tarefas tipo="arquivo" /> : <Navigate to="/login" />}
           />
           <Route
             path="/tarefas/nova"
@@ -91,13 +101,13 @@ function App() {
           <Route
             path="/tarefas/minhas-tarefas"
             element={
-              isTokenValido ? <MinhasTarefas /> : <Navigate to="/login" />
+              isTokenValido ? <MinhasTarefas tipo="todas"/> : <Navigate to="/login" />
             }
           />
                     <Route
             path="/tarefas/aprovacao"
             element={
-              isTokenValido ? <ParaAprovacao /> : <Navigate to="/login" />
+              isTokenValido ? <MinhasTarefas tipo="aprovacao" /> : <Navigate to="/login" />
             }
           />
           <Route

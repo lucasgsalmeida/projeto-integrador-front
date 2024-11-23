@@ -2,7 +2,9 @@ import React from "react";
 import Layout from "../layout/Layout";
 import ListTarefas from "../../components/tarefas/ListTarefas";
 
-const Tarefas = () => {
+const Tarefas = (tipo) => {
+  const tipoConsulta = tipo.tipo
+
   return (
     <Layout>
       <div className="d-sm-flex align-items-center justify-content-between mb-4">
@@ -31,7 +33,7 @@ const Tarefas = () => {
         </div>
       </div>
       <div className="">
-        <ListTarefas />
+        <ListTarefas tipo={tipoConsulta}/>
       </div>
     </Layout>
   );
