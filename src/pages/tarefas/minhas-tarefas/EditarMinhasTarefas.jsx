@@ -1,23 +1,66 @@
 import React, { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
+import "./CustomComents.css";
 import { fetchTipoTarefaById } from "../../../request/TipoTarefaApi";
 import ReactQuill from "react-quill";
-import { fetchUsuarios } from "../../../request/UsuarioApi";
+import {
+  fetchUsuarios,
+  getUsuarioFromLocalStorage,
+} from "../../../request/UsuarioApi";
 import { fetchDepartamentos } from "../../../request/DepartamentoApi";
+import { atualizarTarefa } from "../../../request/TarefaApi";
 
 function EditarMinhasTarefas({ tarefa, onClose, getNomeProjeto }) {
+  const navigate = useNavigate();
+  const [tarefaAtualizada, setTarefaAtualizada] = useState(tarefa);
   const [nomeTipoTarefa, setNomeTipoTarefa] = useState("Carregando...");
   const [usuarios, setUsuarios] = useState([]);
   const [departamentos, setDepartamentos] = useState([]);
-  const [novoComentario, setNovoComentario] = useState(
-    Array(tarefa.subTarefaList.length).fill(false)
-  );
+  const [comentariosEditando, setComentariosEditando] = useState({});
+  const [comentarioSubTarefa, setComentarioSubTarefa] = useState({});
 
-  const escreverNovoComentario = (index) => {
-    setNovoComentario((prevState) => {
-      const newState = [...prevState];
-      newState[index] = !newState[index]; // Alterna entre true e false no índice específico
-      return newState;
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+
+    tarefaAtualizada.subTarefaList.forEach((subTarefa, index) => {
+      const comentarioMensagem = comentarioSubTarefa[index];
+      if (comentarioMensagem) {
+        const usuario = getUsuarioFromLocalStorage();
+        const usuarioId = usuario.usuario.id;
+
+        const comentario = {
+          idUsuario: usuarioId,
+          mensagem: comentarioMensagem,
+        };
+
+        subTarefa.comentarios.push(comentario);
+      }
     });
+
+    console.log(tarefa)
+
+    try {
+      await atualizarTarefa(tarefaAtualizada.id, tarefaAtualizada);
+      navigate("/tarefas/minhas-tarefas");
+      onClose();
+    } catch (error) {
+      console.error("Erro ao atualizar tarefa:", error);
+    }
+  };
+
+  const handleNovoComentario = (index) => {
+    setComentariosEditando((prevState) => ({
+      ...prevState,
+      [index]: true, // Define como true ao clicar no botão
+    }));
+  };
+
+  const editarComentario = (index, mensagem) => {
+
+    setComentarioSubTarefa((prevState) => ({
+      ...prevState,
+      [index]: mensagem,
+    }));
   };
 
   const getNomeDepartamento = (idDepartamento) => {
@@ -51,11 +94,28 @@ function EditarMinhasTarefas({ tarefa, onClose, getNomeProjeto }) {
     fetchTipoTarefa();
   }, [tarefa.id_tipoTarefa]);
 
+  const handleInputChange = (field, value, subTarefaIndex) => {
+    setTarefaAtualizada((prevTarefa) => {
+      const updatedTarefa = { ...prevTarefa };
+
+      if (subTarefaIndex !== undefined) {
+        updatedTarefa.subTarefaList[subTarefaIndex] = {
+          ...updatedTarefa.subTarefaList[subTarefaIndex],
+          [field]: value,
+        };
+      } else {
+        updatedTarefa[field] = value;
+      }
+
+      return updatedTarefa;
+    });
+  };
+
   return (
     <div style={popupStyles.overlay}>
       <div style={popupStyles.popup}>
         <main>
-          <form>
+          <form onSubmit={handleSubmit}>
             <header className="page-header page-header-compact page-header-light border-bottom mb-4">
               <div className="container-fluid px-4">
                 <div className="page-header-content">
@@ -76,7 +136,6 @@ function EditarMinhasTarefas({ tarefa, onClose, getNomeProjeto }) {
                 </div>
               </div>
             </header>
-            {/* Main page content*/}
             <div className="container-fluid">
               <div className="m-0">
                 <div className="mb-2 border-left-primary shadow p-0 pl-3">
@@ -104,7 +163,6 @@ function EditarMinhasTarefas({ tarefa, onClose, getNomeProjeto }) {
                   const formExecutor = "";
 
                   return (
-                    // Adicione o return aqui
                     <div className="">
                       <div
                         key={subTarefa.id}
@@ -120,17 +178,40 @@ function EditarMinhasTarefas({ tarefa, onClose, getNomeProjeto }) {
                                 {getNomeDepartamento(subTarefa.idDepartamento)}
                               </div>
                             </div>{" "}
-                            <div className="mb-2">
-                              <div className="card border-left-primary p-2">
-                                Executor: {getNomeUsuario(subTarefa.idUsuario)}
+                            <div className="card-body m-0 p-0 mt-3">
+                              <div className={`form-group ${formExecutor}`}>
+                                <label>Executor</label>
+                                <select
+                                  id={`responsavel_${index}`}
+                                  className={`form-control ${formClass}`}
+                                  value={subTarefa.idUsuario}
+                                  onChange={(e) =>
+                                    handleInputChange(
+                                      "idUsuario",
+                                      e.target.value,
+                                      index
+                                    )
+                                  }
+                                  required
+                                >
+                                  <option value="">
+                                    Selecione um responsável
+                                  </option>
+                                  {usuarios.map((usuario) => (
+                                    <option key={usuario.id} value={usuario.id}>
+                                      {usuario.nome}
+                                    </option>
+                                  ))}
+                                </select>
                               </div>
                             </div>
-                            <div
-                              className={`row ${cardClass} mb-0`}
-                            >
+                            <div className={`row ${cardClass} mb-0`}>
                               <div className="col-lg-4 card-body mb-0">
                                 <div className="form-group mb-0">
-                                  <label className="mb-0" htmlFor={`dataInicio_${index}`}>
+                                  <label
+                                    className="mb-0"
+                                    htmlFor={`dataInicio_${index}`}
+                                  >
                                     Data inicial
                                   </label>
                                   <input
@@ -138,21 +219,23 @@ function EditarMinhasTarefas({ tarefa, onClose, getNomeProjeto }) {
                                     id={`dataInicio_${index}`}
                                     className={`form-control ${formClass}`}
                                     value={subTarefa.dataInicio}
-                                    onChange={(e) => {
-                                      const newSubTarefaList = [
-                                        ...subTarefaList,
-                                      ];
-                                      newSubTarefaList[index].dataInicio =
-                                        e.target.value;
-                                      setSubTarefaList(newSubTarefaList);
-                                    }}
+                                    onChange={(e) =>
+                                      handleInputChange(
+                                        "dataInicio",
+                                        e.target.value,
+                                        index
+                                      )
+                                    }
                                     required
                                   />
                                 </div>
                               </div>
                               <div className="col-lg-4 card-body mb-0">
                                 <div className="form-group mb-0">
-                                  <label className="mb-0" htmlFor={`dataFim_${index}`}>
+                                  <label
+                                    className="mb-0"
+                                    htmlFor={`dataFim_${index}`}
+                                  >
                                     Data final
                                   </label>
                                   <input
@@ -160,56 +243,76 @@ function EditarMinhasTarefas({ tarefa, onClose, getNomeProjeto }) {
                                     id={`dataFim_${index}`}
                                     className={`form-control ${formClass}`}
                                     value={subTarefa.dataFim}
-                                    onChange={(e) => {
-                                      const newSubTarefaList = [
-                                        ...subTarefaList,
-                                      ];
-                                      newSubTarefaList[index].dataFim =
-                                        e.target.value;
-                                      setSubTarefaList(newSubTarefaList);
-                                    }}
+                                    onChange={(e) =>
+                                      handleInputChange(
+                                        "dataFim",
+                                        e.target.value,
+                                        index
+                                      )
+                                    }
                                     required
                                   />
                                 </div>
                               </div>{" "}
                             </div>
-
-
+                            <label
+                              htmlFor="statusTarefa"
+                              className="form-label"
+                            >
+                              Status da tarefa
+                            </label>
                             <select
-                          className="form-control border-left-primary mb-3"
-                          aria-label="Prioridade"
-                          value=""
-                          required
-                        >
-                          <option value="" disabled>
-                            Status
-                          </option>
-                          <option value="CONCLUIDO">CONCLUÍDO</option>
-                          <option value="FAZENDO">FAZENDO</option>
-                          <option value="PARA_FAZER">PARA FAZER</option>
-                        </select>
-
-
-                            <div className={`card border-left-primary p-2 ${cardClass}`}>
-                              Comentários
-                            </div>
-                            {subTarefa.comentarios.map((coment, index) => (
-                              <div role="alert" className="p-0 mb-4" key={coment.id}>
-                                <div className="card-body text-gray-900 m-3 p-0">
-                                  {getNomeUsuario(coment.idUsuario)}
+                              id="statusTarefa"
+                              className="form-control border-left-primary mb-3"
+                              aria-label="Status"
+                              value={subTarefa.statusTarefa}
+                              onChange={(e) =>
+                                handleInputChange(
+                                  "statusTarefa",
+                                  e.target.value,
+                                  index
+                                )
+                              }
+                              required
+                            >
+                              <option value="" disabled>
+                                Status
+                              </option>
+                              <option value="CONCLUIDO">CONCLUÍDO</option>
+                              <option value="FAZENDO">FAZENDO</option>
+                              <option value="PARA_FAZER">PARA FAZER</option>
+                              <option value="APROVACAO">PARA APROVAÇÃO</option>
+                            </select>
+                            {subTarefa.comentarios.length >= 1 && (
+                              <>
+                                <div
+                                  className={`card border-left-primary p-2 ${cardClass}`}
+                                >
+                                  Comentários
                                 </div>
-                                <div className="card-body text-gray-900 m-0 p-0">
-                                  <ReactQuill
-                                    value={coment.mensagem} // Exibe a mensagem
-                                    readOnly={true} // Define o Quill como não editável
-                                    theme="bubble" // Tema mais leve e ideal para visualização de texto não editável
-                                  />
-                                </div>
-                              </div>
-                            ))}
-                            {!novoComentario[index] && (
+                                {subTarefa.comentarios.map((coment, index) => (
+                                  <div
+                                    role="alert"
+                                    className="p-0 m-0 mb-4"
+                                    key={coment.id}
+                                  >
+                                    <div className="card-body pr-1 mt-4 custom-comment-container">
+                                      <div className="card-body m-0 p-0 text-uppercase font-weight-bold">
+                                        {getNomeUsuario(coment.idUsuario)}
+                                      </div>
+                                      <ReactQuill
+                                        value={coment.mensagem} // Exibe a mensagem
+                                        readOnly={true} // Define o Quill como não editável
+                                        theme="bubble" // Tema mais leve e ideal para visualização de texto não editável
+                                      />
+                                    </div>
+                                  </div>
+                                ))}
+                              </>
+                            )}
+                            {!comentariosEditando[index] && (
                               <a
-                                onClick={() => escreverNovoComentario(index)} // Passa o índice da subtarefa
+                                onClick={() => handleNovoComentario(index)}
                                 className="btn btn-primary btn-icon-split shadow"
                               >
                                 <span className="icon text-white-50">
@@ -218,23 +321,17 @@ function EditarMinhasTarefas({ tarefa, onClose, getNomeProjeto }) {
                                 <span className="text">Novo comentário</span>
                               </a>
                             )}
-                            {novoComentario[index] && (
-                              <div className="">
+                            {comentariosEditando[index] && (
+                              <div className="text-gray-900 m-0">
                                 <div className="text-gray-900 m-0">
                                   Meu comentário:
                                 </div>
                                 <div className="text-gray-900 m-0 p-1">
                                   <ReactQuill
-                                    value={subTarefa.comentarios.mensagem}
-                                    onChange={(newValue) => {
-                                      const newSubTarefaList = [
-                                        ...subTarefaList,
-                                      ];
-                                      newSubTarefaList[
-                                        index
-                                      ].comentarios.mensagem = newValue;
-                                      setSubTarefaList(newSubTarefaList);
-                                    }}
+                                    value={comentarioSubTarefa[index]}
+                                    onChange={(value) =>
+                                      editarComentario(index, value)
+                                    }
                                   />
                                 </div>
                               </div>
@@ -245,6 +342,13 @@ function EditarMinhasTarefas({ tarefa, onClose, getNomeProjeto }) {
                     </div>
                   );
                 })}
+              </div>
+            </div>
+            <div className="card-body">
+              <div className="d-grid">
+                <button className="fw-500 btn btn-primary" type="submit">
+                  Salvar projeto
+                </button>
               </div>
             </div>
           </form>

@@ -87,11 +87,17 @@ const Sidebar = () => {
             <a className="collapse-item" href="/tarefas/list">
               Lista de tarefas
             </a>
+            <a className="collapse-item" href="/tarefas/aprovacao">
+              Para aprovação
+            </a>
             <a className="collapse-item" href="/tarefas/minhas-tarefas">
               Minhas tarefas
             </a>
             <a className="collapse-item" href="/tarefas/modelo">
               Modelo de tarefas
+            </a>
+            <a className="collapse-item" href="/tarefas/arquivo">
+              Arquivo de tarefas
             </a>
           </div>
         </div>

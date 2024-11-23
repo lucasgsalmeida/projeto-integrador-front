@@ -22,6 +22,7 @@ import TipoTarefa from "./pages/tipoTarefa/TipoTarefa";
 import CriarTipoTarefa from "./pages/tipoTarefa/CriarTipoTarefa";
 import EditarTipoTarefa from "./pages/tipoTarefa/EditarTipoTarefa";
 import Configuracoes from "./pages/configuracoes/Configuracoes";
+import ParaAprovacao from "./pages/tarefas/minhas-tarefas/ParaAprovacao";
 
 function App() {
   const { isTokenValido } = useContext(ContextLogin);
@@ -91,6 +92,12 @@ function App() {
             path="/tarefas/minhas-tarefas"
             element={
               isTokenValido ? <MinhasTarefas /> : <Navigate to="/login" />
+            }
+          />
+                    <Route
+            path="/tarefas/aprovacao"
+            element={
+              isTokenValido ? <ParaAprovacao /> : <Navigate to="/login" />
             }
           />
           <Route

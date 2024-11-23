@@ -1,0 +1,16 @@
+.custom-comment-container .ql-editor {
+    padding: 0; /* Remove padding desnecessária */
+    min-height: 0; /* Evita altura mínima alta */
+    max-height: 150px; /* Limita a altura máxima */
+    overflow-y: auto; /* Adiciona scroll vertical quando necessário */
+    font-size: 14px; /* Ajusta o tamanho da fonte */
+    line-height: 1.4; /* Ajusta o espaçamento de linha */
+  }
+  
+  .custom-comment-container {
+    border: 1px solid #ddd; /* Adiciona borda para separar visualmente */
+    border-radius: 5px; /* Adiciona bordas arredondadas */
+    background-color: #f9f9f9; /* Adiciona fundo para contraste */
+    padding: 10px; /* Espaçamento interno */
+  }
+  

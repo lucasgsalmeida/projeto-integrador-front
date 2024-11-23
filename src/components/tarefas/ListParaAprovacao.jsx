@@ -3,13 +3,13 @@ import {
   fetchUsuarios,
   getUsuarioFromLocalStorage,
 } from "../../request/UsuarioApi";
-import { fetchTarefasPorUsuario as fetchTarefasPorUsuarioAPI } from "../../request/TarefaApi";
+import { fetchTarefasPorAprovacao, fetchTarefasPorUsuario as fetchTarefasPorUsuarioAPI } from "../../request/TarefaApi";
 import { fetchProjetos } from "../../request/ProjetoApi";
 import { fetchTipoTarefaById } from "../../request/TipoTarefaApi";
 import { fetchDepartamentos } from "../../request/DepartamentoApi";
 import EditarMinhasTarefas from "../../pages/tarefas/minhas-tarefas/EditarMinhasTarefas";
 
-const ListMinhasTarefas = () => {
+const ListParaAprovacao = () => {
   const [tarefas, setTarefas] = useState([]);
   const [projetos, setProjetos] = useState([]);
   const [error, setError] = useState(null);
@@ -23,7 +23,7 @@ const ListMinhasTarefas = () => {
         setUsuario(loggedUser.usuario);
 
         if (loggedUser) {
-          const fetchedTarefas = await fetchTarefasPorUsuarioAPI(
+          const fetchedTarefas = await fetchTarefasPorAprovacao(
             loggedUser.usuario.id
           );
           setTarefas(fetchedTarefas);
@@ -79,7 +79,7 @@ const ListMinhasTarefas = () => {
       </div>
 
       {tarefaSelecionada && (
-        <EditarMinhasTarefas
+        <EditarParaAprovacao
           tarefa={tarefaSelecionada}
           onClose={handleClosePopup} // Função para fechar o popup
           getNomeProjeto={getNomeProjeto}
@@ -219,4 +219,4 @@ const TarefaItem = ({ tarefa, getNomeProjeto, usuarioId, onClick }) => {
   );
 };
 
-export default ListMinhasTarefas;
+export default ListParaAprovacao;

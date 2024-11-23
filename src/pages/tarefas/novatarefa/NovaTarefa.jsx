@@ -16,6 +16,7 @@ import "./NovaTarefa.css";
 const NovaTarefa = () => {
   const navigate = useNavigate();
   const [comentarios, setComentarios] = useState([]);
+  const [isDescricao, setIsDescricao] = useState([]); // Inicializa como um array vazio
   const [projetos, setProjetos] = useState([]);
   const [tiposTarefas, setTiposTarefas] = useState([]);
   const [subTarefaList, setSubTarefaList] = useState([]);
@@ -29,6 +30,20 @@ const NovaTarefa = () => {
   const [dataInicio, setDataInicio] = useState(
     new Date().toISOString().split("T")[0]
   );
+
+  const toggleIsDescricao = (index) => {
+    const updatedSubTarefaList = [...subTarefaList];
+    updatedSubTarefaList[index].isDescricao =
+      !updatedSubTarefaList[index].isDescricao;
+
+    if (!updatedSubTarefaList[index].isDescricao) {
+      updatedSubTarefaList[index].comentarios = [
+        { idUsuario: usuarioAtual?.id || null, mensagem: "" },
+      ];
+    }
+
+    setSubTarefaList(updatedSubTarefaList);
+  };
 
   const modules = {
     toolbar: [
@@ -178,7 +193,7 @@ const NovaTarefa = () => {
         const comentario = {
           idUsuario: usuarioAtual?.id || null,
           mensagem: "", // Inicialmente vazio; você pode preencher depois
-      };
+        };
 
         novaSubTarefaList.push({
           idProjeto,
@@ -193,6 +208,7 @@ const NovaTarefa = () => {
           dataFim,
           statusTarefa: "PARA_FAZER",
           ativo: true,
+          isDescricao: false, // Adiciona o controle para habilitar/desabilitar a descrição
         });
       });
 
@@ -221,13 +237,14 @@ const NovaTarefa = () => {
     .filter((subTarefa) => subTarefa.ativo)
     .sort((a, b) => a.ordem - b.ordem)
     .map((subTarefa) => ({
-        idUsuario: subTarefa.idUsuario,
-        idDepartamento: subTarefa.idDepartamento,
-        comentarios: subTarefa.comentarios, // A estrutura aqui deve ser um array simples
-        dataInicio: formatDateToLocal(subTarefa.dataInicio),
-        dataFim: formatDateToLocal(subTarefa.dataFim),
-        statusTarefa: "PARA_FAZER",
+      idUsuario: subTarefa.idUsuario,
+      idDepartamento: subTarefa.idDepartamento,
+      comentarios: subTarefa.isDescricao ? subTarefa.comentarios : [], // Apenas envia comentários se isDescricao for true
+      dataInicio: formatDateToLocal(subTarefa.dataInicio),
+      dataFim: formatDateToLocal(subTarefa.dataFim),
+      statusTarefa: "PARA_FAZER",
     }));
+  
 
     console.log(formattedSubTarefaList);
 
@@ -455,20 +472,43 @@ const NovaTarefa = () => {
                                 </div>{" "}
                               </div>
 
-                              <div className={`mt-3 mb-2 ${cardClass}`}>
-                                Descrição detalhada
+                              <div
+                                key={subTarefa.id}
+                                className={`mb-4 ${borderClass} shadow py-2`}
+                              >
+                                  <div className={`card-body m-0 p-2 ${cardClass}`}>
+                                    <div className="form-check form-switch">
+                                      <input
+                                        className="form-check-input"
+                                        type="checkbox"
+                                        id={toggleIsDescricao[index]}
+                                        checked={subTarefa.isDescricao}
+                                        onChange={() =>
+                                          toggleIsDescricao(index)
+                                        }
+                                      />
+                                      <label
+                                        className="form-check-label"
+                                        htmlFor={toggleIsDescricao[index]}
+                                      >
+                                        Adicionar descrição detalhada
+                                      </label>
+                                    </div>
+                                    {subTarefa.isDescricao && (
+                                    <><div className={`mt-3 mb-2 ${cardClass}`}>
+                                      </div><ReactQuill
+                                          value={subTarefa.comentarios[0].mensagem} // Use o índice correto
+                                          onChange={(newValue) => {
+                                            const newSubTarefaList = [
+                                              ...subTarefaList,
+                                            ];
+                                            newSubTarefaList[index].comentarios[0].mensagem = newValue; // Atualiza o comentário da subtarefa
+                                            setSubTarefaList(newSubTarefaList);
+                                          } } /></>
+                                    )}
+                                  </div>
+                                </div>
                               </div>
-                              <ReactQuill
-                                value={subTarefa.comentarios[0].mensagem} // Use o índice correto
-                                onChange={(newValue) => {
-                                  const newSubTarefaList = [...subTarefaList];
-                                  newSubTarefaList[
-                                    index
-                                  ].comentarios[0].mensagem = newValue; // Atualiza o comentário da subtarefa
-                                  setSubTarefaList(newSubTarefaList);
-                                }}
-                              />
-                            </div>
                           </div>
                         </div>
                       </div>

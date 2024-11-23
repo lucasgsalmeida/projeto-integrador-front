@@ -31,7 +31,7 @@ const ListUsuario = () => {
                   <div className="me-3">
                     <h5 className="">{usuario.nome}</h5>
                     <div className="text-muted small">
-                      Email: {usuario.email || 'Desconhecido'}
+                      Email: {usuario.usuario || 'Desconhecido'}
                     </div>
                   </div>
                 </div>

@@ -20,6 +20,17 @@ export const fetchTarefasPorUsuario = async (id) => {
   }
 };
 
+export const fetchTarefasPorAprovacao = async (id) => {
+  try {
+    const response = await axios.get(`${API_URL}/tarefa/get/aprovacao?id=${id}`, {
+      headers: getAuthHeader()
+    });
+    return response.data;
+  } catch (error) {
+    throw new Error('Erro ao buscar tarefas.');
+  }
+};
+
 
 // Função para buscar todas as tarefas
 export const fetchTarefas = async () => {
@@ -46,6 +57,18 @@ export const createTarefa = async (tarefaData) => {
     return response.data;
   } catch (error) {
     throw new Error('Erro ao criar tarefa.');
+  }
+};
+
+export const atualizarTarefa = async (id, TarefaData) => {
+  try {
+    const response = await axios.put(`${API_URL}/tarefa/update/${id}`, TarefaData, {
+      headers: getAuthHeader()
+    });
+    console.log(response)
+    return response.data;
+  } catch (error) {
+    throw new Error('Erro ao atualizar Tarefa.');
   }
 };
 
