@@ -3,6 +3,7 @@ import { fetchTarefasAbertas, fetchTarefasFechadas } from "../../request/TarefaA
 import { fetchProjetos } from "../../request/ProjetoApi";
 import { fetchTipoTarefaById } from "../../request/TipoTarefaApi";
 import EditarMinhasTarefas from "../../pages/tarefas/minhas-tarefas/EditarMinhasTarefas";
+import { fetchUsuarios } from "../../request/UsuarioApi";
 
 const ListTarefas = (tipo) => {
 
@@ -12,7 +13,6 @@ const ListTarefas = (tipo) => {
   const [projetos, setProjetos] = useState([]);
   const [error, setError] = useState(null);
   const [tarefaSelecionada, setTarefaSelecionada] = useState(null);
-
 
   const handleClickTarefa = (tarefa) => {
     setTarefaSelecionada(tarefa);
@@ -87,7 +87,8 @@ const ListTarefas = (tipo) => {
 
 const TarefaItem = ({ tarefa, getNomeProjeto, getUltimaSubTarefa, onClick }) => {
   const [nomeTipoTarefa, setNomeTipoTarefa] = useState('Carregando...');
-
+  const [usuarios, setUsuarios] = useState([]);
+  
   const formatarData = (dataISO) => {
     const partes = dataISO.split("T")[0].split("-");
     const ano = partes[0];
@@ -101,6 +102,9 @@ const TarefaItem = ({ tarefa, getNomeProjeto, getUltimaSubTarefa, onClick }) => 
       try {
         const tipoTarefa = await fetchTipoTarefaById(tarefa.id_tipoTarefa);
         setNomeTipoTarefa(tipoTarefa.nome);
+
+        const usuarios = await fetchUsuarios();
+        setUsuarios(usuarios);
       } catch (error) {
         console.error('Erro ao buscar tipo de tarefa:', error);
         setNomeTipoTarefa('Desconhecido');
@@ -111,6 +115,11 @@ const TarefaItem = ({ tarefa, getNomeProjeto, getUltimaSubTarefa, onClick }) => 
   }, [tarefa.id_tipoTarefa]);
 
   const ultimaSubTarefa = getUltimaSubTarefa(tarefa.subTarefaList);
+
+  const getNomeUsuario = (idUsuario) => {
+    const usuario = usuarios.find((usuario) => usuario.id === idUsuario);
+    return usuario ? usuario.nome : "Desconhecido";
+  };
 
   return (
     <div className="card border-left-primary shadow h-100 py-2 mb-3" key={tarefa.id}>
@@ -125,6 +134,10 @@ const TarefaItem = ({ tarefa, getNomeProjeto, getUltimaSubTarefa, onClick }) => 
               <div className="text-muted small">
                 Data de entrega: {ultimaSubTarefa ? formatarData(ultimaSubTarefa.dataFim) : 'Data não encontrada'}
               </div>
+              <div className="text-muted small">
+                Solicitante: {getNomeUsuario(tarefa.idUsuario)}
+              </div>
+
             </div>
             <div className="text-muted small">
               #{tarefa.id}

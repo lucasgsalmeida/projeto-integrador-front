@@ -234,17 +234,16 @@ const NovaTarefa = () => {
     e.preventDefault();
 
     const formattedSubTarefaList = subTarefaList
-    .filter((subTarefa) => subTarefa.ativo)
-    .sort((a, b) => a.ordem - b.ordem)
-    .map((subTarefa) => ({
-      idUsuario: subTarefa.idUsuario,
-      idDepartamento: subTarefa.idDepartamento,
-      comentarios: subTarefa.isDescricao ? subTarefa.comentarios : [], // Apenas envia comentários se isDescricao for true
-      dataInicio: formatDateToLocal(subTarefa.dataInicio),
-      dataFim: formatDateToLocal(subTarefa.dataFim),
-      statusTarefa: "PARA_FAZER",
-    }));
-  
+      .filter((subTarefa) => subTarefa.ativo)
+      .sort((a, b) => a.ordem - b.ordem)
+      .map((subTarefa) => ({
+        idUsuario: subTarefa.idUsuario,
+        idDepartamento: subTarefa.idDepartamento,
+        comentarios: subTarefa.isDescricao ? subTarefa.comentarios : [], // Apenas envia comentários se isDescricao for true
+        dataInicio: formatDateToLocal(subTarefa.dataInicio),
+        dataFim: formatDateToLocal(subTarefa.dataFim),
+        statusTarefa: "PARA_FAZER",
+      }));
 
     console.log(formattedSubTarefaList);
 
@@ -356,7 +355,7 @@ const NovaTarefa = () => {
                       <div className="">
                         <div
                           key={subTarefa.id}
-                          className={`mb-4 ${borderClass} shadow py-2`}
+                          className={`mb-4 p-0 ${borderClass} shadow`}
                         >
                           <div>
                             <div
@@ -386,6 +385,7 @@ const NovaTarefa = () => {
                                 </strong>
                                 {getNomeDepartamento(subTarefa.idDepartamento)}{" "}
                               </div>
+                              {isActive && <>
 
                               <div className="card-body m-0 p-0 mt-3">
                                 <div className={`form-group ${formExecutor}`}>
@@ -424,6 +424,7 @@ const NovaTarefa = () => {
                                   </select>
                                 </div>
                               </div>
+                              
                               <div
                                 className={`row justify-content-baseline m-0 ${cardClass}`}
                               >
@@ -472,44 +473,54 @@ const NovaTarefa = () => {
                                   </div>
                                 </div>{" "}
                               </div>
-
                               <div
                                 key={subTarefa.id}
                                 className={`mb-4 ${borderClass} shadow py-2`}
                               >
-                                  <div className={`card-body m-0 p-2 ${cardClass}`}>
-                                    <div className="form-check form-switch">
-                                      <input
-                                        className="form-check-input"
-                                        type="checkbox"
-                                        id={toggleIsDescricao[index]}
-                                        checked={subTarefa.isDescricao}
-                                        onChange={() =>
-                                          toggleIsDescricao(index)
-                                        }
-                                      />
-                                      <label
-                                        className="form-check-label"
-                                        htmlFor={toggleIsDescricao[index]}
-                                      >
-                                        Adicionar descrição detalhada
-                                      </label>
-                                    </div>
-                                    {subTarefa.isDescricao && (
-                                    <><div className={`mt-3 mb-2 ${cardClass}`}>
-                                      </div><ReactQuill
-                                          value={subTarefa.comentarios[0].mensagem} // Use o índice correto
-                                          onChange={(newValue) => {
-                                            const newSubTarefaList = [
-                                              ...subTarefaList,
-                                            ];
-                                            newSubTarefaList[index].comentarios[0].mensagem = newValue; // Atualiza o comentário da subtarefa
-                                            setSubTarefaList(newSubTarefaList);
-                                          } } /></>
-                                    )}
+                                <div
+                                  className={`card-body m-0 p-2 ${cardClass}`}
+                                >
+                                  <div className="form-check form-switch">
+                                    <input
+                                      className="form-check-input"
+                                      type="checkbox"
+                                      id={toggleIsDescricao[index]}
+                                      checked={subTarefa.isDescricao}
+                                      onChange={() => toggleIsDescricao(index)}
+                                    />
+                                    <label
+                                      className="form-check-label"
+                                      htmlFor={toggleIsDescricao[index]}
+                                    >
+                                      Adicionar descrição detalhada
+                                    </label>
                                   </div>
+                                  {subTarefa.isDescricao && (
+                                    <>
+                                      <div
+                                        className={`mt-3 mb-2 ${cardClass}`}
+                                      ></div>
+                                      <ReactQuill
+                                        value={
+                                          subTarefa.comentarios[0].mensagem
+                                        } // Use o índice correto
+                                        onChange={(newValue) => {
+                                          const newSubTarefaList = [
+                                            ...subTarefaList,
+                                          ];
+                                          newSubTarefaList[
+                                            index
+                                          ].comentarios[0].mensagem = newValue; // Atualiza o comentário da subtarefa
+                                          setSubTarefaList(newSubTarefaList);
+                                        }}
+                                      />
+                                    </>
+                                  )}
                                 </div>
                               </div>
+                              </>}
+
+                            </div>
                           </div>
                         </div>
                       </div>
