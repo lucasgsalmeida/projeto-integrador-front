@@ -8,7 +8,7 @@ import {
   fetchTipoTarefas,
 } from "../../request/TipoTarefaApi";
 
-const ListVencimento = () => {
+const ListKanban = () => {
   const [tarefas, setTarefas] = useState([]);
   const [projetos, setProjetos] = useState([]);
   const [error, setError] = useState(null);
@@ -70,33 +70,29 @@ const ListVencimento = () => {
     const daquiSeteDias = new Date(hoje);
     daquiSeteDias.setDate(hoje.getDate() + 7);
 
-    const vencidas = [];
-    const vencimentoHoje = [];
-    const vencimentoAmanha = [];
-    const vencimentoSeteDias = [];
+    const paraFazer = [];
+    const EmAndamento = [];
+    const concluido = [];
+    const paraAprovacao = [];
 
     subTarefas.forEach((subTarefa) => {
       const dataFim = new Date(subTarefa.dataFim);
       dataFim.setHours(0, 0, 0, 0);
-      dataFim.setDate(dataFim.getDate() + 1);
 
-      if (subTarefa.statusTarefa != "CONCLUIDO") {
-        if (dataFim.getTime() < hoje.getTime()) {
-          vencidas.push(subTarefa);
-        } else if (dataFim.getTime() === hoje.getTime()) {
-          vencimentoHoje.push(subTarefa);
-        } else if (dataFim.getTime() === amanha.getTime()) {
-          vencimentoAmanha.push(subTarefa);
-        } else if (
-          dataFim.getTime() > amanha.getTime() &&
-          dataFim.getTime() <= daquiSeteDias.getTime()
-        ) {
-          vencimentoSeteDias.push(subTarefa);
+      if (dataFim.getTime() <= daquiSeteDias.getTime()) {
+        if (subTarefa.statusTarefa === "PARA_FAZER") {
+          paraFazer.push(subTarefa);
+        } else if (subTarefa.statusTarefa === "FAZENDO") {
+          EmAndamento.push(subTarefa);
+        } else if (subTarefa.statusTarefa === "CONCLUIDO") {
+          concluido.push(subTarefa);
+        } else if (subTarefa.statusTarefa === "APROVACAO") {
+          paraAprovacao.push(subTarefa);
         }
       }
     });
 
-    return { vencidas, vencimentoHoje, vencimentoAmanha, vencimentoSeteDias };
+    return { paraFazer, EmAndamento, concluido, paraAprovacao };
   };
 
   const getSubTarefasFiltradas = () => {
@@ -109,16 +105,8 @@ const ListVencimento = () => {
     return filtrarPorData(todasSubTarefas);
   };
 
-  const { vencidas, vencimentoHoje, vencimentoAmanha, vencimentoSeteDias } =
+  const { paraFazer, EmAndamento, concluido, paraAprovacao } =
     getSubTarefasFiltradas();
-
-  const formatarData = (dataISO) => {
-    const data = new Date(dataISO);
-    const dia = String(data.getDate()).padStart(2, "0");
-    const mes = String(data.getMonth() + 1).padStart(2, "0"); // Janeiro é 0
-    const ano = data.getFullYear();
-    return `${dia}/${mes}/${ano}`;
-  };
 
   const getNomeDepartamento = (idDepartamento) => {
     const departamento = departamentos.find(
@@ -127,107 +115,88 @@ const ListVencimento = () => {
     return departamento ? departamento.nome : "Desconhecido";
   };
 
-  const getNomeStatus = (statusNome) => {
-    switch (statusNome) {
-      case "CONCLUIDO":
-        return "CONCLUÍDO";
-      case "PARA_FAZER":
-        return "PARA FAZER";
-      case "FAZENDO":
-        return "EM ANDAMENTO";
-      case "APROVACAO":
-        return "PARA APROVAÇÃO";
-      default:
-        return "";
-    }
-  };
-
   return (
     <>
       {error && <p>{error}</p>}
       <div className="container-fluid p-0 m-0">
         <div className="row">
-        <div className="col-12 col-md-3">
-            <div className="card">
-              <div className="card-header bg-dark text-white text-center">
-                <h5 className="font-weight-bold text-uppercase">Vencidas</h5>
-              </div>
-              <div className="card-body">
-                {vencidas.length > 0 ? (
-                  <ExibirVencimentos
-                    vencimento={vencidas}
-                    getNomeTipoTarefas={getNomeTipoTarefas}
-                    getNomeDepartamento={getNomeDepartamento}
-                    getNomeStatus={getNomeStatus}
-                  />
-                ) : (
-                  <p className="text-center">Nenhuma tarefa vencida.</p>
-                )}
-              </div>
-            </div>
-          </div>
-
           <div className="col-12 col-md-3">
             <div className="card">
               <div className="card-header bg-danger text-white text-center">
-                <h5 className="font-weight-bold text-uppercase">Hoje</h5>
-              </div>
-              <div className="card-body">
-                {vencimentoHoje.length > 0 ? (
-                  <ExibirVencimentos
-                    vencimento={vencimentoHoje}
-                    getNomeTipoTarefas={getNomeTipoTarefas}
-                    getNomeDepartamento={getNomeDepartamento}
-                    getNomeStatus={getNomeStatus}
-                  />
-                ) : (
-                  <p className="text-center">Nenhuma tarefa para hoje.</p>
-                )}
-              </div>
-            </div>
-          </div>
-
-          {/* Coluna de Amanhã */}
-          <div className="col-12 col-md-3">
-            <div className="card">
-              <div className="card-header bg-warning text-white text-center">
-                <h5 className="font-weight-bold text-uppercase">Amanhã</h5>
-              </div>
-              <div className="card-body">
-                {vencimentoAmanha.length > 0 ? (
-                  <ExibirVencimentos
-                    vencimento={vencimentoAmanha}
-                    getNomeTipoTarefas={getNomeTipoTarefas}
-                    getNomeDepartamento={getNomeDepartamento}
-                    getNomeStatus={getNomeStatus}
-                  />
-                ) : (
-                  <p className="text-center">Nenhuma tarefa para amanhã.</p>
-                )}
-              </div>
-            </div>
-          </div>
-
-          {/* Coluna dos Próximos 7 Dias */}
-          <div className="col-12 col-md-3">
-            <div className="card">
-              <div className="card-header bg-success text-white text-center">
                 <h5 className="font-weight-bold text-uppercase">
-                  Próximos 7 Dias
+                  Para aprovação
                 </h5>
               </div>
               <div className="card-body">
-                {vencimentoSeteDias.length > 0 ? (
-                  <ExibirVencimentos
-                    vencimento={vencimentoSeteDias}
+                {paraAprovacao.length > 0 ? (
+                  <ExibirItens
+                    vencimento={paraAprovacao}
                     getNomeTipoTarefas={getNomeTipoTarefas}
                     getNomeDepartamento={getNomeDepartamento}
-                    getNomeStatus={getNomeStatus}
                   />
                 ) : (
                   <p className="text-center">
-                    Nenhuma tarefa nos próximos 7 dias.
+                    Nenhuma tarefa aguardando aprovação.
                   </p>
+                )}
+              </div>
+            </div>
+          </div>
+
+          <div className="col-12 col-md-3">
+            <div className="card">
+              <div className="card-header bg-dark text-white text-center">
+                <h5 className="font-weight-bold text-uppercase">Para fazer</h5>
+              </div>
+              <div className="card-body">
+                {paraFazer.length > 0 ? (
+                  <ExibirItens
+                    vencimento={paraFazer}
+                    getNomeTipoTarefas={getNomeTipoTarefas}
+                    getNomeDepartamento={getNomeDepartamento}
+                  />
+                ) : (
+                  <p className="text-center">Nenhuma tarefa para fazer.</p>
+                )}
+              </div>
+            </div>
+          </div>
+
+          <div className="col-12 col-md-3">
+            <div className="card">
+              <div className="card-header bg-info text-white text-center">
+                <h5 className="font-weight-bold text-uppercase">
+                  Em andamento
+                </h5>
+              </div>
+              <div className="card-body">
+                {EmAndamento.length > 0 ? (
+                  <ExibirItens
+                    vencimento={EmAndamento}
+                    getNomeTipoTarefas={getNomeTipoTarefas}
+                    getNomeDepartamento={getNomeDepartamento}
+                  />
+                ) : (
+                  <p className="text-center">Nenhuma tarefa em andamento.</p>
+                )}
+              </div>
+            </div>
+          </div>
+
+          <div className="col-12 col-md-3">
+            <div className="card">
+              <div className="card-header bg-success text-white text-center">
+                <h5 className="font-weight-bold text-uppercase">Concluído</h5>
+              </div>
+              <div className="card-body">
+                {concluido.length > 0 ? (
+                  <ExibirItens
+                    vencimento={concluido}
+                    getNomeTipoTarefas={getNomeTipoTarefas}
+                    getNomeDepartamento={getNomeDepartamento}
+                  />
+                ) : (
+                  <p className="text-center">Nenhuma tarefa concluída</p>
                 )}
               </div>
             </div>
@@ -237,18 +206,29 @@ const ListVencimento = () => {
     </>
   );
 };
-const ExibirVencimentos = ({
+const ExibirItens = ({
   vencimento,
   getNomeTipoTarefas,
   getNomeDepartamento,
-  getNomeStatus,
 }) => {
+  const formatarData = (dataISO) => {
+    const data = new Date(dataISO);
+    data.setDate(data.getDate() + 1);
+    const dia = String(data.getDate()).padStart(2, "0");
+    const mes = String(data.getMonth() + 1).padStart(2, "0"); // Janeiro é 0
+    const ano = data.getFullYear();
+    return `${dia}/${mes}/${ano}`;
+  };
+
   return (
     <>
       {vencimento.length > 0 && (
         <>
           {vencimento.map((subTarefa) => (
-            <div key={subTarefa.id} className="card-header border-left-primary">
+            <div
+              key={subTarefa.id}
+              className="card-header border-left-primary mb-3"
+            >
               <div className="text-dark p-0 display-6">
                 <div>
                   <b>{getNomeTipoTarefas(subTarefa.tarefa.id_tipoTarefa)}</b>
@@ -258,7 +238,7 @@ const ExibirVencimentos = ({
                   <b>{getNomeDepartamento(subTarefa.idDepartamento)}</b>
                 </div>
                 <div>
-                  Status: <b>{getNomeStatus(subTarefa.statusTarefa)}</b>
+                  Data final: <b>{formatarData(subTarefa.dataFim)}</b>
                 </div>
               </div>
             </div>
@@ -269,4 +249,4 @@ const ExibirVencimentos = ({
   );
 };
 
-export default ListVencimento;
+export default ListKanban;

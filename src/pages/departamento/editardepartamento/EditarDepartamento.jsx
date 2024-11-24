@@ -48,7 +48,7 @@ const EditarDepartamento = () => {
 
       await updateDepartamento(id, departamentoData); // Atualiza o departamento
 
-      navigate("/departamentos"); // Redireciona após a atualização
+      navigate("/configuracoes"); // Redireciona após a atualização
     } catch (error) {
       console.error("Erro ao atualizar departamento:", error);
       alert("Erro ao atualizar departamento");

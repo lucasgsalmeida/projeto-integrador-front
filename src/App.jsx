@@ -25,7 +25,7 @@ import Configuracoes from "./pages/configuracoes/Configuracoes";
 import NovoUsuario from "./pages/usuario/NovoUsuario";
 
 function App() {
-  const { isTokenValido } = useContext(ContextLogin);
+  const { isTokenValido, logout } = useContext(ContextLogin);
 
   return (
     <div className="app-container">

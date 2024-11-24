@@ -12,9 +12,17 @@ const getTokenInfoFromLocalStorage = (key) => {
   return item;
 };
 
+
 export const ContextLogin = createContext();
 
 export const ContextLoginProvider = ({ children }) => {
+  const logout = () => {
+    localStorage.clear();
+    setTokenInfo(null);
+    setTokenValido(false); // Marca o token como inválido
+    navigate('/login'); // Redireciona para a página de login
+  };
+
   const [tokenInfo, setTokenInfo] = useState(getTokenInfoFromLocalStorage("token"));
 
   const isTokenValid = () => {
@@ -82,6 +90,7 @@ export const ContextLoginProvider = ({ children }) => {
 
   return (
     <ContextLogin.Provider value={{
+      logout,
       tokenInfo,
       loginApi,
       setTokenValido,

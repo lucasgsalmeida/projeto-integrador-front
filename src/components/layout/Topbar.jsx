@@ -1,78 +1,97 @@
-import React, { useEffect, useState } from 'react'
-import { getUsuarioFromLocalStorage } from '../../request/UsuarioApi';
+import React, { useState, useEffect, useContext } from "react";
+import { getUsuarioFromLocalStorage } from "../../request/UsuarioApi";
+import imgLogo from "../../imgs/undraw_profile.svg";
+import { useNavigate } from "react-router-dom";
+import { ContextLogin } from "../../context/LoginContext";
 
 const Topbar = () => {
-
   const usuario = getUsuarioFromLocalStorage();
+  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+  const { logout } = useContext(ContextLogin);
 
-  // Adicionar uma verificação condicional para evitar erros
-  const usuarioNome = usuario ? usuario.usuario.nome : 'Usuário';
 
-    return (
-        <nav className="navbar navbar-expand navbar-light bg-white topbar mb-4 static-top shadow">
-          {/* Sidebar Toggle (Topbar) */}
-          <button
-            id="sidebarToggleTop"
-            className="btn btn-link d-md-none rounded-circle mr-3"
-          >
-            <i className="fa fa-bars" />
-          </button>
-          {/* Topbar Search */}
-          <form className="d-none d-sm-inline-block form-inline mr-auto ml-md-3 my-2 my-md-0 mw-100 navbar-search">
-            <div className="input-group">
-              <input
-                type="text"
-                className="form-control bg-light border-0 small"
-                placeholder="Procurar por..."
-                aria-label="Search"
-                aria-describedby="basic-addon2"
-              />
-              <div className="input-group-append">
-                <button className="btn btn-primary" type="button">
-                  <i className="fas fa-search fa-sm" />
-                </button>
-              </div>
-            </div>
-          </form>
-          {/* Topbar Navbar */}
-          <ul className="navbar-nav ml-auto">
-            {/* Nav Item - Search Dropdown (Visible Only XS) */}
-            <li className="nav-item dropdown no-arrow d-sm-none">
-              <a
-                className="nav-link dropdown-toggle"
-                href="#"
-                id="searchDropdown"
-                role="button"
-                data-toggle="dropdown"
-                aria-haspopup="true"
-                aria-expanded="false"
-              >
-                <i className="fas fa-search fa-fw" />
-              </a>
-            </li>
-            <li className="nav-item dropdown no-arrow">
-              <a
-                className="nav-link dropdown-toggle"
-                href="#"
-                id="userDropdown"
-                role="button"
-                data-toggle="dropdown"
-                aria-haspopup="true"
-                aria-expanded="false"
-              >
-                <span className="mr-2 d-none d-lg-inline text-gray-600 small">
-                  {usuarioNome}
-                </span>
-                <img
-                  className="img-profile rounded-circle"
-                  src="img/undraw_profile.svg"
-                />
-              </a>
-            </li>
-          </ul>
-        </nav>
-      );
+  const toggleDropdown = () => {
+    setIsDropdownOpen((prevState) => !prevState);
+  };
+
+  const closeDropdown = () => {
+    setIsDropdownOpen(false);
+  };
+
+
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (!event.target.closest("#userDropdownMenu") && !event.target.closest("#userDropdown")) {
+        closeDropdown();
+      }
+    };
+
+    if (isDropdownOpen) {
+      document.addEventListener("mousedown", handleClickOutside);
     }
-    
 
-export default Topbar
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, [isDropdownOpen]);
+
+  return (
+    <nav className="navbar navbar-expand navbar-light bg-white topbar mb-4 static-top shadow">
+      <ul className="navbar-nav ml-auto">
+        {isDropdownOpen ? (
+          <li className="nav-item dropdown" id="userDropdownMenu">
+            <div
+              className="dropdown-menu-end shadow animated--fade-in bg-light mt-5"
+              style={{ width: "200px" }} // Ajuste da largura do dropdown
+            >
+              <h6 className="dropdown-header d-flex align-items-center m-0 pl-2">
+                <img
+                  className="rounded-circle mr-2"
+                  style={{ width: "40px", height: "40px" }}
+                  src={imgLogo}
+                  alt="User avatar"
+                />
+                <div className="p-0 m-0">
+                  <div className="fw-bold p-0 m-0">{usuario ? usuario.usuario.nome : "Desconhecido"}</div>
+                  <div className="text-truncate small p-0 m-0">
+                    {usuario ? usuario.usuario.usuario : "Desconhecido"}
+                  </div>
+                </div>
+              </h6>
+              <div className="dropdown-divider p-0 m-0" />
+              <a
+                className="dropdown-item pl-2 m-0 h6 text-danger font-weight-bold text-center"
+                onClick={logout}
+              >
+                <small className="font-weight-bold text-center">Logout</small>
+              </a>
+            </div>
+          </li>
+        ) : (
+          <li className="nav-item">
+            <a
+              className="nav-link"
+              href="#"
+              id="userDropdown"
+              onClick={toggleDropdown}
+            >
+              <div className="d-flex align-items-center">
+                <img
+                  className="rounded-circle"
+                  style={{ width: "30px", height: "30px", marginRight: "10px" }}
+                  src={imgLogo}
+                  alt="User profile"
+                />
+                <span className="d-none d-lg-inline text-gray-600 small">
+                  {usuario ? usuario.usuario.nome : "Desconhecido"}
+                </span>
+              </div>
+            </a>
+          </li>
+        )}
+      </ul>
+    </nav>
+  );
+};
+
+export default Topbar;
