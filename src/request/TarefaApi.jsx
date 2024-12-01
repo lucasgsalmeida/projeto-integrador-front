@@ -37,7 +37,6 @@ export const fetchTarefasAbertas = async () => {
     const response = await axios.get(`${API_URL}/tarefa/get/all/abertas`, {
       headers: getAuthHeader()
     });
-    console.log("aa")
     return response.data;
   } catch (error) {
     throw new Error('Erro ao buscar tarefas.');

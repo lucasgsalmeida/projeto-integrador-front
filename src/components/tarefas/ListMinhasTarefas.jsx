@@ -3,7 +3,10 @@ import {
   fetchUsuarios,
   getUsuarioFromLocalStorage,
 } from "../../request/UsuarioApi";
-import { fetchTarefasPorAprovacao, fetchTarefasPorUsuario as fetchTarefasPorUsuarioAPI } from "../../request/TarefaApi";
+import {
+  fetchTarefasPorAprovacao,
+  fetchTarefasPorUsuario as fetchTarefasPorUsuarioAPI,
+} from "../../request/TarefaApi";
 import { fetchProjetos } from "../../request/ProjetoApi";
 import { fetchTipoTarefaById } from "../../request/TipoTarefaApi";
 import { fetchDepartamentos } from "../../request/DepartamentoApi";
@@ -15,8 +18,10 @@ const ListMinhasTarefas = (tipo) => {
   const [error, setError] = useState(null);
   const [usuario, setUsuario] = useState(null);
   const [tarefaSelecionada, setTarefaSelecionada] = useState(null);
+  const [filtrarPorStatus, setFiltrarPorStatus] = useState("");
+  const [tarefasFiltradas, setTarefasFiltradas] = useState([]);
 
-  const tipoConsulta = tipo.tipo
+  const tipoConsulta = tipo.tipo;
 
   useEffect(() => {
     const fetchData = async () => {
@@ -25,15 +30,18 @@ const ListMinhasTarefas = (tipo) => {
         setUsuario(loggedUser.usuario);
 
         if (loggedUser) {
-
-          if (tipoConsulta==="aprovacao") {
-          const fetchedTarefas = await fetchTarefasPorAprovacao(loggedUser.usuario.id);
-          setTarefas(fetchedTarefas);
-        } if (tipoConsulta==="todas") {
-          const fetchedTarefas = await fetchTarefasPorUsuarioAPI(loggedUser.usuario.id);
-          setTarefas(fetchedTarefas);
-
-        }
+          if (tipoConsulta === "aprovacao") {
+            const fetchedTarefas = await fetchTarefasPorAprovacao(
+              loggedUser.usuario.id
+            );
+            setTarefas(fetchedTarefas);
+          }
+          if (tipoConsulta === "todas") {
+            const fetchedTarefas = await fetchTarefasPorUsuarioAPI(
+              loggedUser.usuario.id
+            );
+            setTarefas(fetchedTarefas);
+          }
         } else {
           setError("Usuário não encontrado.");
         }
@@ -59,32 +67,123 @@ const ListMinhasTarefas = (tipo) => {
   };
 
   const handleClosePopup = () => {
-    setTarefaSelecionada(null); // Fechar o popup
+    setTarefaSelecionada(null);
+  };
+
+  const handleStatusChange = (e) => {
+    setTarefasFiltradas([])
+    const status = e.target.value;
+    setFiltrarPorStatus(status);
+    filtrarVencimentos(status);
+  };
+
+  const filtrarVencimentos = (status) => {
+    const hoje = new Date();
+    hoje.setHours(0, 0, 0, 0);
+    const amanha = new Date(hoje);
+    amanha.setDate(hoje.getDate() + 1);
+    const daquiSeteDias = new Date(hoje);
+    daquiSeteDias.setDate(hoje.getDate() + 7);
+
+    const filtro = [];
+
+    tarefas.forEach((tarefa) => {
+      tarefa.subTarefaList.forEach((subTarefa) => {
+        const dataFim = new Date(subTarefa.dataFim);
+        dataFim.setHours(0, 0, 0, 0);
+        dataFim.setDate(dataFim.getDate() + 1);
+
+        if (subTarefa.idUsuario === usuario.id) {
+
+        if (status === "1") {
+          if (dataFim.getTime() < hoje.getTime()) {
+            filtro.push(tarefa);
+          }
+        }
+
+        if (status === "2") {
+          if (dataFim.getTime() === hoje.getTime()) {
+            filtro.push(tarefa);
+          }
+        }
+
+        if (status === "3") {
+          if (dataFim.getTime() === amanha.getTime()) {
+            filtro.push(tarefa);
+          }
+        }
+        if (status === "4") {
+          if (
+            dataFim.getTime() > amanha.getTime() &&
+            dataFim.getTime() <= daquiSeteDias.getTime()
+          ) {
+            filtro.push(tarefa);
+          }
+        }
+        }
+      });
+    });
+    setTarefasFiltradas(filtro);
+  };
+
+  const removerFiltros = () => {
+    setFiltrarPorStatus("");
+    setTarefasFiltradas([]);
   };
 
   return (
     <>
       {error && <p>{error}</p>}
-      <div className="row">
-        {tarefas.length > 0 ? (
-          tarefas.map((tarefa) => (
-            <div
-              className="col-12 col-sm-6 col-md-4 col-lg-3 mb-4 w-100 "
-              key={tarefa.id}
+      {tarefas.length > 0 && (
+        <div className="d-flex align-items-center mb-3">
+          <div className="mr-3">
+            <a
+              className="btn btn-danger btn-icon-split shadow"
+              onClick={removerFiltros}
             >
-              <TarefaItem
-                tarefa={tarefa}
-                getNomeProjeto={getNomeProjeto}
-                usuarioId={usuario.id}
-                onClick={() => handleClickTarefa(tarefa)} // Passa a função de clique
-              />
-            </div>
-          ))
-        ) : (
-          <p>Nenhuma tarefa encontrada.</p>
-        )}
-      </div>
+              <span className="icon text-white-50">
+                <i className="fas fa-minus" />
+              </span>
+              <span className="text">Remover Filtros</span>
+            </a>
+          </div>
+          <div>
+            <select
+              className="form-control border-left-primary"
+              aria-label="Filtrar por vencimento"
+              value={filtrarPorStatus}
+              onChange={handleStatusChange}
+              required
+            >
+              <option value="" disabled>
+                Filtrar por vencimento
+              </option>
+              <option value="1">Vencidas</option>
+              <option value="2">Vence hoje</option>
+              <option value="3">Vence amanhã</option>
+              <option value="4">Vence em sete dias</option>
+            </select>
+          </div>
+        </div>
+      )}
 
+      {tarefas.length > 0 ? (
+        (filtrarPorStatus ? tarefasFiltradas : tarefas).map((tarefa) => (
+          <div
+            className="col-12 col-sm-6 col-md-4 col-lg-3 mb-4 w-100 pt-3 pl-0"
+            key={tarefa.id}
+          >
+            <TarefaItem
+              tarefa={tarefa}
+              getNomeProjeto={getNomeProjeto}
+              usuarioId={usuario.id}
+              onClick={() => handleClickTarefa(tarefa)} // Passa a função de clique
+            />
+          </div>
+        ))
+      ) : (
+        <p>Nenhuma tarefa encontrada.</p>
+      )}
       {tarefaSelecionada && (
         <EditarMinhasTarefas
           tarefa={tarefaSelecionada}
@@ -132,7 +231,6 @@ const TarefaItem = ({ tarefa, getNomeProjeto, usuarioId, onClick }) => {
     fetchTipoTarefa();
   }, [tarefa.id_tipoTarefa]);
 
-  // Filtrando as subtarefas que pertencem ao usuário
   const subtarefasDoUsuario = tarefa.subTarefaList.filter(
     (subTarefa) => subTarefa.idUsuario === usuarioId
   );

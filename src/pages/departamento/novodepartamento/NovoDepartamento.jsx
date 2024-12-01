@@ -88,7 +88,7 @@ const NovoDepartamento = () => {
                     <div className="card-body">
                       <select
                         className="form-control border-left-primary"
-                        aria-label="Prioridade"
+                        aria-label="Usuario"
                         value={idUsuario}
                         onChange={(e) => setIdUsuario(e.target.value)}
                         required
