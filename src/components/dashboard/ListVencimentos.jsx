@@ -149,8 +149,8 @@ const ListVencimento = () => {
         <div className="row">
         <div className="col-12 col-md-3">
             <div className="card">
-              <div className="card-header bg-dark text-white text-center">
-                <h5 className="font-weight-bold text-uppercase">Vencidas</h5>
+              <div className="d-flex bg-dark text-white align-items-center justify-content-center m-0 p-2 rounded">
+                <h5 className="font-weight-bold text-uppercase h6 text-center m-0 p-0">Vencidas</h5>
               </div>
               <div className="card-body">
                 {vencidas.length > 0 ? (
@@ -169,9 +169,9 @@ const ListVencimento = () => {
 
           <div className="col-12 col-md-3">
             <div className="card">
-              <div className="card-header bg-danger text-white text-center">
-                <h5 className="font-weight-bold text-uppercase">Hoje</h5>
-              </div>
+            <div className="d-flex bg-danger text-white align-items-center justify-content-center m-0 p-2 rounded">
+            <h5 className="font-weight-bold text-uppercase h6 text-center m-0 p-0">Hoje</h5>
+            </div>
               <div className="card-body">
                 {vencimentoHoje.length > 0 ? (
                   <ExibirVencimentos
@@ -190,8 +190,8 @@ const ListVencimento = () => {
           {/* Coluna de Amanhã */}
           <div className="col-12 col-md-3">
             <div className="card">
-              <div className="card-header bg-warning text-white text-center">
-                <h5 className="font-weight-bold text-uppercase">Amanhã</h5>
+            <div className="d-flex bg-warning text-white align-items-center justify-content-center m-0 p-2 rounded">
+            <h5 className="font-weight-bold text-uppercase h6 text-center m-0 p-0">Amanhã</h5>
               </div>
               <div className="card-body">
                 {vencimentoAmanha.length > 0 ? (
@@ -211,10 +211,8 @@ const ListVencimento = () => {
           {/* Coluna dos Próximos 7 Dias */}
           <div className="col-12 col-md-3">
             <div className="card">
-              <div className="card-header bg-success text-white text-center">
-                <h5 className="font-weight-bold text-uppercase">
-                  Próximos 7 Dias
-                </h5>
+            <div className="d-flex bg-success text-white align-items-center justify-content-center m-0 p-2 rounded">
+            <h5 className="font-weight-bold text-uppercase h6 text-center m-0 p-0">Próximos 7 Dias</h5>
               </div>
               <div className="card-body">
                 {vencimentoSeteDias.length > 0 ? (
@@ -253,11 +251,11 @@ const ExibirVencimentos = ({
                 <div>
                   <b>{getNomeTipoTarefas(subTarefa.tarefa.id_tipoTarefa)}</b>
                 </div>
-                <div>
+                <div className="text-xs">
                   Departamento:{" "}
                   <b>{getNomeDepartamento(subTarefa.idDepartamento)}</b>
                 </div>
-                <div>
+                <div className="text-xs">
                   Status: <b>{getNomeStatus(subTarefa.statusTarefa)}</b>
                 </div>
               </div>

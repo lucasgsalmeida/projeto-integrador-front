@@ -122,8 +122,8 @@ const ListKanban = () => {
         <div className="row">
           <div className="col-12 col-md-3">
             <div className="card">
-              <div className="card-header bg-danger text-white text-center">
-                <h5 className="font-weight-bold text-uppercase">
+              <div className="d-flex bg-danger text-white align-items-center justify-content-center m-0 p-2 rounded">
+                <h5 className="font-weight-bold text-uppercase h6 text-center m-0 p-0">
                   Para aprovação
                 </h5>
               </div>
@@ -145,8 +145,10 @@ const ListKanban = () => {
 
           <div className="col-12 col-md-3">
             <div className="card">
-              <div className="card-header bg-dark text-white text-center">
-                <h5 className="font-weight-bold text-uppercase">Para fazer</h5>
+              <div className="d-flex bg-dark text-white align-items-center justify-content-center m-0 p-2 rounded">
+                <h5 className="font-weight-bold text-uppercase h6 text-center m-0 p-0">
+                  Para fazer
+                </h5>
               </div>
               <div className="card-body">
                 {paraFazer.length > 0 ? (
@@ -164,8 +166,8 @@ const ListKanban = () => {
 
           <div className="col-12 col-md-3">
             <div className="card">
-              <div className="card-header bg-info text-white text-center">
-                <h5 className="font-weight-bold text-uppercase">
+              <div className="d-flex bg-info text-white align-items-center justify-content-center m-0 p-2 rounded">
+                <h5 className="font-weight-bold text-uppercase h6 text-center m-0 p-0">
                   Em andamento
                 </h5>
               </div>
@@ -185,8 +187,10 @@ const ListKanban = () => {
 
           <div className="col-12 col-md-3">
             <div className="card">
-              <div className="card-header bg-success text-white text-center">
-                <h5 className="font-weight-bold text-uppercase">Concluído</h5>
+              <div className="d-flex bg-success text-white align-items-center justify-content-center m-0 p-2 rounded">
+                <h5 className="font-weight-bold text-uppercase h6 text-center m-0 p-0">
+                  Concluído
+                </h5>
               </div>
               <div className="card-body">
                 {concluido.length > 0 ? (
@@ -227,17 +231,17 @@ const ExibirItens = ({
           {vencimento.map((subTarefa) => (
             <div
               key={subTarefa.id}
-              className="card-header border-left-primary mb-3"
+              className="card-header border-left-primary mb-3 h-6"
             >
-              <div className="text-dark p-0 display-6">
-                <div>
+              <div className="text-dark p-0 h-6">
+                <div className="h6 m-0 p-0">
                   <b>{getNomeTipoTarefas(subTarefa.tarefa.id_tipoTarefa)}</b>
                 </div>
-                <div>
+                <div className="text-xs">
                   Departamento:{" "}
                   <b>{getNomeDepartamento(subTarefa.idDepartamento)}</b>
                 </div>
-                <div>
+                <div className="text-xs">
                   Data final: <b>{formatarData(subTarefa.dataFim)}</b>
                 </div>
               </div>
