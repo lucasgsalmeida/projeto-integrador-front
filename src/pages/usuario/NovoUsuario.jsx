@@ -79,7 +79,7 @@ const NovoUsuario = () => {
                     <input
                       className="form-control border-left-primary"
                       id="postTitleInput"
-                      type="text"
+                      type="email"
                       placeholder="Digite o email do usuário..."
                       value={usuario}
                       onChange={(e) => setUsuario(e.target.value)}
