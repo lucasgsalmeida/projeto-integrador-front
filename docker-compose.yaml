@@ -19,4 +19,4 @@ services:
       - frontgestao
 networks:
   frontgestao:
-    external: false
+    external: true
