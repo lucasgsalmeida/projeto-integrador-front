@@ -1,26 +1,36 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <link rel="icon" type="image/svg+xml" href="./src/imgs/logo-branca.png"/>
+    <link rel="icon" type="image/svg+xml" href="./src/imgs/logo-branca.png" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Gestão 10X</title>
-    <link href="vendor/fontawesome-free/css/all.min.css" rel="stylesheet" type="text/css">
     <link
-        href="https://fonts.googleapis.com/css?family=Nunito:200,200i,300,300i,400,400i,600,600i,700,700i,800,800i,900,900i"
-        rel="stylesheet">
-        <link rel="stylesheet" href="/path/to/bootstrap.min.css">
-        <link rel="stylesheet" href="/path/to/toggle.min.css">
-        
-    <!-- Custom styles for this template-->
-    <link href="./css/sb-admin-2.min.css" rel="stylesheet">
+      href="vendor/fontawesome-free/css/all.min.css"
+      rel="stylesheet"
+      type="text/css"
+    />
+    <link
+      href="https://fonts.googleapis.com/css?family=Nunito:200,200i,300,300i,400,400i,600,600i,700,700i,800,800i,900,900i"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="/path/to/bootstrap.min.css" />
+    <link rel="stylesheet" href="/path/to/toggle.min.css" />
 
+    <!-- Custom styles for this template-->
+    <link href="./css/sb-admin-2.min.css" rel="stylesheet" />
   </head>
   <body>
     <div id="root"></div>
     <script type="module" src="/src/main.jsx"></script>
     <script src="vendor/jquery/jquery.min.js"></script>
     <script src="vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+
+    <script src="/env-config.js"></script>
+    <script>
+      const API_URL = window._env_.API_URL || "http://localhost:8080";
+      console.log("API_URL:", API_URL);
+    </script>
 
     <!-- Core plugin JavaScript-->
     <script src="vendor/jquery-easing/jquery.easing.min.js"></script>
@@ -33,6 +43,6 @@
 
     <!-- Page level custom scripts -->
     <script src="js/demo/chart-area-demo.js"></script>
-    <script src="js/demo/chart-pie-demo.js"></script>  </body>
-    
+    <script src="js/demo/chart-pie-demo.js"></script>
+  </body>
 </html>
