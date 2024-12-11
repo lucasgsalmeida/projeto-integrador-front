@@ -25,6 +25,9 @@ FROM node:18 AS production
 
 WORKDIR /app
 
+# Verifica se o diretório /app/build foi criado corretamente
+RUN ls -la /app
+
 # Copia os arquivos compilados para o container
 COPY --from=builder /app/build ./build
 
