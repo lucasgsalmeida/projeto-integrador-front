@@ -5,7 +5,7 @@ FROM node:18 AS builder
 WORKDIR /app
 
 # Copia os arquivos do package.json e package-lock.json
-COPY package*.json ./
+COPY package*.json ./ 
 
 # Instala as dependências
 RUN npm install
@@ -31,8 +31,8 @@ RUN ls -la /app
 # Copia os arquivos compilados para o container
 COPY --from=builder /app/build ./build
 
-# Copia o arquivo env-config.js para o diretório de produção
-COPY ./public/env-config.js ./build/env-config.js
+# Cria o arquivo env-config.js com o valor da variável de ambiente REACT_APP_API_URL
+RUN echo "window.env = { REACT_APP_API_URL: '$REACT_APP_API_URL' };" > /app/build/env-config.js
 
 # Expõe a porta 3000 para o servidor estático
 EXPOSE 3000

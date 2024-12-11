@@ -6,9 +6,9 @@ services:
       context: .
       dockerfile: Dockerfile
       args:
-        REACT_APP_API_URL: "https://apigestao.lumendigital.com.br"
+        REACT_APP_API_URL: "https://apigestao.lumendigital.com.br"  # Passa a variável para o Dockerfile
     environment:
-      - REACT_APP_API_URL=https://apigestao.lumendigital.com.br
+      - REACT_APP_API_URL=https://apigestao.lumendigital.com.br  # Passa a variável para o container
     labels:
       - traefik.enable=true
       - traefik.http.routers.front-gestao.rule=Host(`gestao.lumendigital.com.br`)
