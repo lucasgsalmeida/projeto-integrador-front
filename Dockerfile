@@ -16,5 +16,5 @@ WORKDIR /usr/share/nginx/html
 COPY --from=builder /app/dist .
 
 # Adicionar variáveis de ambiente no tempo de execução
-COPY ./env-config.js ./env-config.js
+COPY ./public/env-config.js /usr/share/nginx/html/env-config.js
 CMD ["/bin/sh", "-c", "envsubst < /usr/share/nginx/html/env-config.js > /usr/share/nginx/html/env-config.js && nginx -g 'daemon off;'"]
