@@ -5,6 +5,8 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
+    environment:
+      REACT_APP_API_URL: "https://apigestao.lumendigital.com.br"
     labels:
       - traefik.enable=true
       - traefik.http.routers.front-gestao.rule=Host(`gestao.lumendigital.com.br`)
