@@ -1,20 +1,38 @@
+# Fase de build
 FROM node:18 AS builder
+
+# Define o diretório de trabalho
+WORKDIR /app
+
+# Copia os arquivos do package.json e package-lock.json
+COPY package*.json ./
+
+# Instala as dependências
+RUN npm install
+
+# Copia o restante dos arquivos do projeto
+COPY . .
+
+# Define a variável de ambiente para a URL da API
+ARG REACT_APP_API_URL
+ENV REACT_APP_API_URL=${REACT_APP_API_URL}
+
+# Executa o build da aplicação React
+RUN npm run build
+
+# Fase de produção
+FROM node:18 AS production
 
 WORKDIR /app
 
-COPY package*.json ./
-RUN npm install
+# Copia os arquivos compilados para o container
+COPY --from=builder /app/build ./build
 
-COPY . .
+# Copia o arquivo env-config.js para o diretório de produção
+COPY ./public/env-config.js ./build/env-config.js
 
-ARG REACT_APP_API_URL
-RUN npm run build
+# Expõe a porta 3000 para o servidor estático
+EXPOSE 3000
 
-FROM nginx:alpine
-WORKDIR /usr/share/nginx/html
-
-COPY --from=builder /app/dist .
-
-# Adicionar variáveis de ambiente no tempo de execução
-COPY ./public/env-config.js /usr/share/nginx/html/env-config.js
-CMD ["/bin/sh", "-c", "envsubst < /usr/share/nginx/html/env-config.js > /usr/share/nginx/html/env-config.js && nginx -g 'daemon off;'"]
+# Comando para iniciar o servidor estático
+CMD ["serve", "-s", "build", "-l", "3000"]
